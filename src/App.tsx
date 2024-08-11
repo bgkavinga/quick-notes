@@ -144,6 +144,7 @@ const App: React.FC = () => {
           allTags={allTags}
           onTagClick={handleTagClick}
           selectedTags={selectedTags}
+          showNotification={showNotification} // Pass showNotification
         />
         {isFormVisible && (
           <NoteForm

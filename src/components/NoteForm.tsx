@@ -105,7 +105,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ note, allTags, onSave, onClose }) =
               className="w-full border border-gray-300 p-2 rounded"
             />
             <div className="flex flex-wrap mt-2">
-              {allTags.map((tag, index) => (
+              {allTags && allTags.map((tag, index) => (
                 <span key={index} className="bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer hover:bg-gray-300" onClick={() => handleTagClick(tag)}>
                   {tag}
                 </span>
