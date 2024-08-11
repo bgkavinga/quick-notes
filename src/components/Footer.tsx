@@ -16,7 +16,7 @@ const Footer: React.FC<FooterProps> = ({ message, onExportClick, onImportClick }
   };
 
   return (
-    <footer className="bg-gray-800 text-white py-4 px-4">
+    <footer className="bg-gray-800 text-white py-2 px-4"> {/* Reduced vertical padding */}
       <div className="container mx-auto flex items-center justify-between">
         {/* Notification Section */}
         <div className="flex-grow flex items-center">

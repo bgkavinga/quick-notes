@@ -6,11 +6,12 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 
 const App: React.FC = () => {
-  const [notes, setNotes] = useState<{ id: string; title: string; content: string }[]>([]);
-  const [filteredNotes, setFilteredNotes] = useState<{ id: string; title: string; content: string }[]>([]);
-  const [currentNote, setCurrentNote] = useState<{ id: string; title: string; content: string } | null>(null);
+  const [notes, setNotes] = useState<{ id: string; title: string; content: string; tags: string[] }[]>([]);
+  const [filteredNotes, setFilteredNotes] = useState<{ id: string; title: string; content: string; tags: string[] }[]>([]);
+  const [currentNote, setCurrentNote] = useState<{ id: string; title: string; content: string; tags: string[] } | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     chrome.storage.local.get('notes', (result) => {
@@ -20,17 +21,17 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const saveNote = (title: string, content: string, id: string | undefined) => {
+  const saveNote = (title: string, content: string, id: string | undefined, tags: string[]) => {
     let updatedNotes;
 
     if (id) {
       // Update the existing note
       updatedNotes = notes.map(note =>
-        note.id === id ? { ...note, title, content } : note
+        note.id === id ? { ...note, title, content, tags } : note
       );
     } else {
       // Create a new note
-      const newNote = { id: Date.now().toString(), title, content };
+      const newNote = { id: Date.now().toString(), title, content, tags };
       updatedNotes = [...notes, newNote];
     }
 
@@ -74,6 +75,18 @@ const App: React.FC = () => {
     setFilteredNotes(filtered);
   };
 
+  const handleTagClick = (tag: string) => {
+    setSelectedTags((prevSelectedTags) => {
+      if (prevSelectedTags.includes(tag)) {
+        // Remove tag if already selected
+        return prevSelectedTags.filter((t) => t !== tag);
+      } else {
+        // Add tag if not selected
+        return [...prevSelectedTags, tag];
+      }
+    });
+  };
+
   const showNotification = (message: string) => {
     setNotification(message);
     setTimeout(() => setNotification(null), 3000); // Hide after 3 seconds
@@ -95,7 +108,7 @@ const App: React.FC = () => {
       try {
         const result = event.target?.result;
         if (typeof result === 'string') {
-          const importedNotes = JSON.parse(result) as Note[];
+          const importedNotes = JSON.parse(result) as { id: string; title: string; content: string; tags: string[] }[];
           setNotes(importedNotes);
           setFilteredNotes(importedNotes);
           chrome.storage.local.set({ notes: importedNotes });
@@ -108,18 +121,29 @@ const App: React.FC = () => {
     };
     reader.readAsText(file);
   };
+
+  const allTags = Array.from(new Set(notes.flatMap(note => note.tags)));
+
+  // Filter notes based on selected tags
+  const filteredByTags = filteredNotes.filter(note =>
+    selectedTags.length === 0 || note.tags.some(tag => selectedTags.includes(tag))
+  );
+
   return (
     <div className="flex flex-col h-screen">
       <Header
         onAddClick={() => setIsFormVisible(true)}
-        onSearch={handleSearch} // Pass handleSearch to Header
+        onSearch={handleSearch}
       />
       <main className="flex-1 p-4 overflow-auto">
         <NoteList
-          notes={filteredNotes} // Use filtered notes
+          notes={filteredByTags}
           onEdit={editNote}
           onDelete={deleteNote}
           onCopy={handleCopy}
+          allTags={allTags}
+          onTagClick={handleTagClick}
+          selectedTags={selectedTags}
         />
         {isFormVisible && (
           <NoteForm
@@ -132,8 +156,8 @@ const App: React.FC = () => {
       <Footer
         message={notification}
         onNotificationClose={() => setNotification(null)}
-        onExportClick={handleExportClick} // Pass the export function
-        onImportClick={handleImport} // Pass handleImport to Footer
+        onExportClick={handleExportClick}
+        onImportClick={handleImport}
       />
     </div>
   );
