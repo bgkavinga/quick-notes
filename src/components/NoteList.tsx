@@ -74,10 +74,11 @@ const NoteList: React.FC<NoteListProps> = ({
           <ReactMarkdown
             className="markdown mt-1 p-1 rounded text-xs"
             components={{
-              code({ node, inline, className, children, ...props }) {
+              code({ node, className, children, ...props }) {
                 const codeString = String(children).trim();
+                const isInline = className ? className.includes('language-') : false;
 
-                return !inline ? (
+                return isInline ? (
                   <div className="relative bg-gray-900 text-green-400 p-2 rounded border border-gray-600">
                     <button
                       onClick={() => handleCopyCode(codeString)}

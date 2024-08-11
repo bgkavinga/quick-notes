@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import NoteList from './components/NoteList';
 import NoteForm from './components/NoteForm';
-import Notification from './components/Notification';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -158,8 +157,7 @@ const App: React.FC = () => {
         )}
       </main>
       <Footer
-        message={notification}
-        onNotificationClose={() => setNotification(null)}
+        message={notification||''}
         onExportClick={handleExportClick}
         onImportClick={handleImport}
       />
