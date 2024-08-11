@@ -3,6 +3,7 @@ import NoteList from './components/NoteList';
 import NoteForm from './components/NoteForm';
 import Notification from './components/Notification';
 import Header from './components/Header';
+import Footer from './components/Footer';
 
 const App: React.FC = () => {
   const [notes, setNotes] = useState<{ id: string; title: string; content: string }[]>([]);
@@ -19,12 +20,12 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const saveNote = (title: string, content: string,id: string|undefined) => {
+  const saveNote = (title: string, content: string, id: string | undefined) => {
     let updatedNotes;
-  
+
     if (id) {
       // Update the existing note
-      updatedNotes = notes.map(note => 
+      updatedNotes = notes.map(note =>
         note.id === id ? { ...note, title, content } : note
       );
     } else {
@@ -32,7 +33,7 @@ const App: React.FC = () => {
       const newNote = { id: Date.now().toString(), title, content };
       updatedNotes = [...notes, newNote];
     }
-  
+
     setNotes(updatedNotes);
     setFilteredNotes(updatedNotes);
     chrome.storage.local.set({ notes: updatedNotes });
@@ -78,6 +79,35 @@ const App: React.FC = () => {
     setTimeout(() => setNotification(null), 3000); // Hide after 3 seconds
   };
 
+  const handleExportClick = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notes));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "notes.json");
+    document.body.appendChild(downloadAnchorNode); // Required for Firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
+  const handleImport = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const result = event.target?.result;
+        if (typeof result === 'string') {
+          const importedNotes = JSON.parse(result) as Note[];
+          setNotes(importedNotes);
+          setFilteredNotes(importedNotes);
+          chrome.storage.local.set({ notes: importedNotes });
+          showNotification('Notes imported successfully!');
+        }
+      } catch (error) {
+        console.error('Failed to import notes:', error);
+        showNotification('Failed to import notes.');
+      }
+    };
+    reader.readAsText(file);
+  };
   return (
     <div className="flex flex-col h-screen">
       <Header
@@ -99,12 +129,12 @@ const App: React.FC = () => {
           />
         )}
       </main>
-      {notification && (
-        <Notification
-          message={notification}
-          onClose={() => setNotification(null)}
-        />
-      )}
+      <Footer
+        message={notification}
+        onNotificationClose={() => setNotification(null)}
+        onExportClick={handleExportClick} // Pass the export function
+        onImportClick={handleImport} // Pass handleImport to Footer
+      />
     </div>
   );
 };
