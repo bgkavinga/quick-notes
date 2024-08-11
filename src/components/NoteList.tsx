@@ -42,7 +42,7 @@ const NoteList: React.FC<NoteListProps> = ({
     <div>
       <div className="mb-2">
         <div className="flex flex-wrap gap-1 mb-2">
-          {allTags.map((tag) => (
+          {allTags && allTags.map((tag) => (
             <button
               key={tag}
               onClick={() => onTagClick(tag)}

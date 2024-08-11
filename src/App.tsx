@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import NoteList from './components/NoteList';
 import NoteForm from './components/NoteForm';
 import Notification from './components/Notification';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
+type Note = {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+};
+
 const App: React.FC = () => {
-  const [notes, setNotes] = useState<{ id: string; title: string; content: string; tags: string[] }[]>([]);
-  const [filteredNotes, setFilteredNotes] = useState<{ id: string; title: string; content: string; tags: string[] }[]>([]);
-  const [currentNote, setCurrentNote] = useState<{ id: string; title: string; content: string; tags: string[] } | null>(null);
-  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
+  const [currentNote, setCurrentNote] = useState<Note | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -17,79 +23,74 @@ const App: React.FC = () => {
     chrome.storage.local.get('notes', (result) => {
       const savedNotes = result.notes || [];
       setNotes(savedNotes);
-      setFilteredNotes(savedNotes); // Initialize filtered notes
+      setFilteredNotes(savedNotes);
     });
   }, []);
 
-  const saveNote = (title: string, content: string, id: string | undefined, tags: string[]) => {
-    let updatedNotes;
+  const saveNote = useCallback((title: string, content: string, id: string | undefined, tags: string[]) => {
+    let updatedNotes: Note[];
 
     if (id) {
-      // Update the existing note
       updatedNotes = notes.map(note =>
         note.id === id ? { ...note, title, content, tags } : note
       );
     } else {
-      // Create a new note
-      const newNote = { id: Date.now().toString(), title, content, tags };
+      const newNote: Note = { id: Date.now().toString(), title, content, tags };
       updatedNotes = [...notes, newNote];
     }
 
     setNotes(updatedNotes);
     setFilteredNotes(updatedNotes);
-    chrome.storage.local.set({ notes: updatedNotes });
-    setIsFormVisible(false);
+    chrome.storage.local.set({ notes: updatedNotes }, () => {
+      showNotification(id ? 'Note updated successfully!' : 'Note saved successfully!');
+    });
     setCurrentNote(null);
-    const message = id ? 'Note updated successfully!' : 'Note saved successfully!';
-    showNotification(message);
-  };
+  }, [notes]);
 
-  const editNote = (id: string) => {
+  const editNote = useCallback((id: string) => {
     const note = notes.find((n) => n.id === id) || null;
     setCurrentNote(note);
-    setIsFormVisible(true);
-  };
+  }, [notes]);
 
-  const deleteNote = (id: string) => {
+  const deleteNote = useCallback((id: string) => {
     const updatedNotes = notes.filter((note) => note.id !== id);
     setNotes(updatedNotes);
-    setFilteredNotes(updatedNotes); // Update filtered notes
-    chrome.storage.local.set({ notes: updatedNotes });
-    showNotification('Note deleted successfully!');
-  };
+    setFilteredNotes(updatedNotes);
+    chrome.storage.local.set({ notes: updatedNotes }, () => {
+      showNotification('Note deleted successfully!');
+    });
+  }, [notes]);
 
-  const handleCopy = (content: string) => {
+  const handleCopy = useCallback((content: string) => {
     navigator.clipboard.writeText(content).then(() => {
       showNotification('Note copied to clipboard!');
     }).catch((err) => {
       console.error('Failed to copy note:', err);
     });
-  };
+  }, []);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     const lowercasedQuery = query.toLowerCase();
     const filtered = notes.filter((note) =>
       note.title.toLowerCase().includes(lowercasedQuery) ||
       note.content.toLowerCase().includes(lowercasedQuery)
     );
     setFilteredNotes(filtered);
-  };
+  }, [notes]);
 
-  const handleTagClick = (tag: string) => {
+  const handleTagClick = useCallback((tag: string) => {
     setSelectedTags((prevSelectedTags) => {
       if (prevSelectedTags.includes(tag)) {
-        // Remove tag if already selected
         return prevSelectedTags.filter((t) => t !== tag);
       } else {
-        // Add tag if not selected
         return [...prevSelectedTags, tag];
       }
     });
-  };
+  }, []);
 
   const showNotification = (message: string) => {
     setNotification(message);
-    setTimeout(() => setNotification(null), 3000); // Hide after 3 seconds
+    setTimeout(() => setNotification(null), 3000);
   };
 
   const handleExportClick = () => {
@@ -97,7 +98,7 @@ const App: React.FC = () => {
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", "notes.json");
-    document.body.appendChild(downloadAnchorNode); // Required for Firefox
+    document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
@@ -108,11 +109,12 @@ const App: React.FC = () => {
       try {
         const result = event.target?.result;
         if (typeof result === 'string') {
-          const importedNotes = JSON.parse(result) as { id: string; title: string; content: string; tags: string[] }[];
+          const importedNotes = JSON.parse(result) as Note[];
           setNotes(importedNotes);
           setFilteredNotes(importedNotes);
-          chrome.storage.local.set({ notes: importedNotes });
-          showNotification('Notes imported successfully!');
+          chrome.storage.local.set({ notes: importedNotes }, () => {
+            showNotification('Notes imported successfully!');
+          });
         }
       } catch (error) {
         console.error('Failed to import notes:', error);
@@ -124,7 +126,6 @@ const App: React.FC = () => {
 
   const allTags = Array.from(new Set(notes.flatMap(note => note.tags)));
 
-  // Filter notes based on selected tags
   const filteredByTags = filteredNotes.filter(note =>
     selectedTags.length === 0 || note.tags.some(tag => selectedTags.includes(tag))
   );
@@ -132,25 +133,27 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        onAddClick={() => setIsFormVisible(true)}
+        onAddClick={() => setCurrentNote({ id: '', title: '', content: '', tags: [] })} // Open NoteForm for new note
         onSearch={handleSearch}
       />
       <main className="flex-1 p-4 overflow-auto">
-        <NoteList
-          notes={filteredByTags}
-          onEdit={editNote}
-          onDelete={deleteNote}
-          onCopy={handleCopy}
-          allTags={allTags}
-          onTagClick={handleTagClick}
-          selectedTags={selectedTags}
-          showNotification={showNotification} // Pass showNotification
-        />
-        {isFormVisible && (
+        {currentNote ? (
           <NoteForm
             note={currentNote}
+            allTags={allTags}
             onSave={saveNote}
-            onClose={() => setIsFormVisible(false)}
+            onClose={() => setCurrentNote(null)}
+          />
+        ) : (
+          <NoteList
+            notes={filteredByTags}
+            onEdit={editNote}
+            onDelete={deleteNote}
+            onCopy={handleCopy}
+            allTags={allTags}
+            onTagClick={handleTagClick}
+            selectedTags={selectedTags}
+            showNotification={showNotification}
           />
         )}
       </main>
