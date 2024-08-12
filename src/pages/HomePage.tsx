@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNoteContext } from '@/context/NoteContext'
 import ReactMarkdown from 'react-markdown'
-import { FaCopy } from 'react-icons/fa'
+import { FaCopy,FaTrash } from 'react-icons/fa'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { FaEdit } from 'react-icons/fa'
@@ -41,6 +41,10 @@ const HomePage: React.FC = () => {
       setFilteredNotes(filtered)
     }
   }
+
+  const handleDeleteNote = (noteId: string) => {
+    navigate(`/delete-note/${noteId}`);
+  };
 
   const renderers: {
     [key: string]: React.FC<{
@@ -109,10 +113,6 @@ const HomePage: React.FC = () => {
                   <h1 className='text-lg font-bold bg-gray-200 text-gray-800 p-2 rounded'>
                     {note.title ? note.title : 'Untitled'}
                   </h1>
-                  <FaEdit
-                    className='ml-2 cursor-pointer text-gray-400 group-hover:text-gray-600 transition-colors duration-300 absolute right-0 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100'
-                    onClick={() => handleNoteClick(note.id)}
-                  />
                 </div>
                 {note.tags.includes('html') ? (
                   <div
@@ -127,7 +127,7 @@ const HomePage: React.FC = () => {
                     {note.content}
                   </ReactMarkdown>
                 )}
-                <div className='tags-list'>
+                <div className='tags-list flex justify-between items-center mt-2'>
                   <ul className='flex flex-wrap p-2'>
                     {note.tags.map(tag => (
                       <li
@@ -138,6 +138,16 @@ const HomePage: React.FC = () => {
                       </li>
                     ))}
                   </ul>
+                  <div className="flex space-x-4 p-2">
+                    <FaEdit
+                      className="cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg"
+                      onClick={() => handleNoteClick(note.id)}
+                    />
+                    <FaTrash
+                      className="cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg"
+                      onClick={() => handleDeleteNote(note.id)}
+                    />
+                  </div>
                 </div>
               </li>
             ))}

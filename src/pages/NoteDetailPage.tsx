@@ -62,12 +62,12 @@ const NoteDetailPage: React.FC = () => {
   }
 
   const handleDelete = () => {
-    const updatedNotes = notes.filter((note) => note.id !== id);
-    setNotes(updatedNotes);
-    setFilteredNotes(updatedNotes);
-    StorageUtil.setItem('notes',updatedNotes);
-    setNotification('Note deleted successfully!');
-    navigate('/');
+    // const updatedNotes = notes.filter((note) => note.id !== id);
+    // setNotes(updatedNotes);
+    // setFilteredNotes(updatedNotes);
+    // StorageUtil.setItem('notes',updatedNotes);
+    // setNotification('Note deleted successfully!');
+    navigate(`/delete-note/${note?.id}`);
   };
   
 
