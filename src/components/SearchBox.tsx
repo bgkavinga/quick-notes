@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa'; // Import the search icon
+import { useNoteContext } from '@/context/NoteContext';
 
-interface SearchBoxProps {
-  onSearch: (query: string) => void;
-}
 
-const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
+const SearchBox: React.FC = () => {
   const [query, setQuery] = useState('');
+  const { notes, setFilteredNotes } = useNoteContext();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setQuery(newValue);
-    onSearch(newValue);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchQuery = e.target.value.toLowerCase();
+    setQuery(searchQuery);
+
+    const filteredNotes = notes.filter(note =>
+      note.title.toLowerCase().includes(searchQuery) ||
+      note.content.toLowerCase().includes(searchQuery) ||
+      note.tags.some(tag => tag.toLowerCase().includes(searchQuery))
+    );
+    setFilteredNotes(filteredNotes);
   };
 
   return (

@@ -9,5 +9,16 @@ export default defineConfig({
     react(),
     crx({ manifest })
   ],
-  
+  resolve: {
+    alias: {
+      '@': '/src'
+    },
+  },
+  server: {
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      port: 5173,
+    },
+  },
 })

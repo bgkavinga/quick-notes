@@ -1,57 +1,86 @@
-import React from 'react';
-import { FaFileExport, FaFileImport } from 'react-icons/fa'; // Import the icons
+import React, { useEffect } from 'react';
+import { useNoteContext } from '@/context/NoteContext';
+import { FiDownload,FiUpload } from 'react-icons/fi';
+import StorageUtil from '@/utils/storageUtil';
 
-interface FooterProps {
-  message?: string;
-  onExportClick?: () => void;
-  onImportClick?: (file: File) => void;
-}
+const Footer: React.FC = () => {
+  const { notes, notification, setNotes,setFilteredNotes,clearNotification } = useNoteContext();
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        clearNotification();
+      }, 3000); // Hide notification after 3 seconds
 
-const Footer: React.FC<FooterProps> = ({ message, onExportClick, onImportClick }) => {
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      return () => clearTimeout(timer); // Cleanup the timer on component unmount
+    }
+  }, [notification, clearNotification]);
+
+  const handleExportClick = () => {
+    const notesJson = JSON.stringify(notes, null, 2);
+    const blob = new Blob([notesJson], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'notes.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && onImportClick) {
-      onImportClick(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        try {
+          const importedNotes = JSON.parse(content);
+          setNotes(importedNotes);
+          setFilteredNotes(importedNotes);
+          StorageUtil.setItem('notes',importedNotes )
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+      };
+      reader.readAsText(file);
     }
   };
 
+
   return (
-    <footer className="bg-gray-800 text-white py-2 px-4"> {/* Reduced vertical padding */}
-      <div className="container mx-auto flex items-center justify-between">
-        {/* Notification Section */}
-        <div className="flex-grow flex items-center">
-          {message && (
-            <div className="text-gray-200 text-sm">
-              {message}
-            </div>
-          )}
+    <footer className="fixed bottom-0 left-0 w-full bg-gray-800 text-white py-2 px-4">
+    <div className="container mx-auto flex justify-between items-center">
+      {notification && (
+        <div className="text-white p-2 rounded bg-gray-700">
+          <p>{notification}</p>
         </div>
-
-        {/* Button Container */}
-        <div className="flex-none flex items-center space-x-4">
-          {/* Import Button */}
-          <label className="flex items-center cursor-pointer bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-full flex items-center space-x-1">
-            <input
-              type="file"
-              accept=".json" // Adjust the file type if needed
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            <FaFileImport className="text-lg" />
-            <span className="text-sm">Import Notes</span>
-          </label>
-
-          {/* Export Button */}
-          <button
-            onClick={onExportClick}
-            className="bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-full flex items-center space-x-1"
-          >
-            <FaFileExport className="text-lg" />
-            <span className="text-sm">Export Notes</span>
-          </button>
-        </div>
+      )}
+      <div className="flex items-center ml-auto">
+        <input
+          type="file"
+          accept="application/json"
+          onChange={handleImportClick}
+          className="hidden"
+          id="import-file"
+        />
+        <label
+          htmlFor="import-file"
+          className="flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded cursor-pointer mr-4"
+        >
+          <FiUpload className="mr-2" />
+          Import
+        </label>
+        <button
+          onClick={handleExportClick}
+          className="flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+        >
+          <FiDownload className="mr-2" />
+          Export
+        </button>
       </div>
-    </footer>
+    </div>
+  </footer>
   );
 };
 
