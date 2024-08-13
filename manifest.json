@@ -10,5 +10,12 @@
     "tabs",
     "activeTab", 
     "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://jira.corp.adobe.com/*"],
+      "js": ["src/content_scripts/jira.tsx"],
+      "css": ["src/content_scripts/styles.css.js"]
+    }
   ]
 }

@@ -99,7 +99,7 @@ const HomePage: React.FC = () => {
           </div>
         )}
       </div>
-      <main className='p-2 mb-8'>
+      <main className='p-2 mb-12'>
         {filteredNotes.length === 0 ? (
           <p className='text-gray-600 text-lg'>No notes available</p>
         ) : (
