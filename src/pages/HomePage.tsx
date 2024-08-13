@@ -2,10 +2,9 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNoteContext } from '@/context/NoteContext'
 import ReactMarkdown from 'react-markdown'
-import { FaCopy,FaTrash } from 'react-icons/fa'
+import { FaCopy,FaTrash,FaEdit } from 'react-icons/fa'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { FaEdit } from 'react-icons/fa'
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
@@ -43,7 +42,7 @@ const HomePage: React.FC = () => {
   }
 
   const handleDeleteNote = (noteId: string) => {
-    navigate(`/delete-note/${noteId}`);
+    navigate(`/note-delete/${noteId}`);
   };
 
   const renderers: {

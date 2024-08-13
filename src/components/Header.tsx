@@ -16,18 +16,28 @@ const Header: React.FC = () => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     const url = tab.url
     const title = tab.title || '';
-    const contentHtml = `<a href='${url}' target='_blank' >${title}</a>`;
-    const newNote = { id:String(Date.now()), title:title || '', content:contentHtml || '', tags:['html'] };
-    const updatedNotes =  [...notes, newNote];
 
-    const updatedTags = [...new Set([...allTags, ...newNote.tags])];
-    setNotes(updatedNotes);
-
-    setFilteredNotes(updatedNotes);
-    setAllTags(updatedTags);
-    StorageUtil.setItem('notes',updatedNotes);
-    setNotification('Link saved successfully!'); // Set notification
-    navigate('/')
+    const filtered = notes.filter(note =>
+      note.title.toLowerCase().includes(title.toLowerCase())
+    );
+    if (filtered.length > 0) {
+      const firstFilteredNote = filtered[0];
+      navigate(`/note-detail/${firstFilteredNote.id}`)
+    }else{
+      const contentHtml = `<a href='${url}' target='_blank' >${title}</a>`;
+      const newNote = { id:String(Date.now()), title:title || '', content:contentHtml || '', tags:['html'] };
+      const updatedNotes =  [...notes, newNote];
+  
+      const updatedTags = [...new Set([...allTags, ...newNote.tags])];
+      setNotes(updatedNotes);
+  
+      setFilteredNotes(updatedNotes);
+      setAllTags(updatedTags);
+      StorageUtil.setItem('notes',updatedNotes);
+      setNotification('Link saved successfully!'); // Set notification
+      navigate('/')
+    }
+    
   }
 
   return (
