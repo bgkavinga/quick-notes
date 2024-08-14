@@ -11,7 +11,8 @@ type Note = {
   id: string
   title: string
   content: string
-  tags: string[]
+  tags: string[],
+  timestamp: string
 }
 
 type NoteContextType = {
@@ -49,7 +50,6 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         const notes = savedNotes || []
         setNotes(notes)
         setFilteredNotes(notes)
-        console.log('loaded saved notes');
       } catch (error) {
         console.error('Error fetching notes:', error)
       }
@@ -64,7 +64,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   }
 
   const setNotes = (newNotes: Note[]) => {
-    const sortedNotes = newNotes.sort((a, b) => Number(b.id) - Number(a.id));
+    const sortedNotes = newNotes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     setAllTags([
         ...new Set<string>(sortedNotes.flatMap((note: Note) => note.tags))
       ])
@@ -72,7 +72,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const setFilteredNotes = (newNotes: Note[]) => {
-    const sortedNotes = newNotes.sort((a, b) => Number(b.id) - Number(a.id));
+    const sortedNotes = newNotes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     setFilteredNotesState(sortedNotes);
   };
 

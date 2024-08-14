@@ -22,7 +22,7 @@ const SearchBox: React.FC = () => {
 
   return (
     <div className="flex items-center space-x-2 w-full">
-      <FaSearch className="text-gray-400" />
+      <FaSearch className="text-xl text-gray-400" />
       <input
         type="text"
         value={query}

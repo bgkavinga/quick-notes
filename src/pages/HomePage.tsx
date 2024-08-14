@@ -78,14 +78,14 @@ const HomePage: React.FC = () => {
                 className='note-item bg-white rounded-lg shadow '
               >
                 <div className='relative group'>
-                  <h1 onClick = {() => titleClickHandler(note.id)} className='text-lg font-bold bg-gray-200 text-gray-800 p-2 rounded'>
+                  <h1 onClick = {() => titleClickHandler(note.id)} className='text-lg font-bold bg-gray-200 text-gray-800 p-2 rounded cursor-pointer'>
                     {note.title ? note.title : 'Untitled'}
                   </h1>
                 </div>
                 <MarkdownRenderer content={note.content}/ >
                 <div className='tags-list flex justify-between items-center mt-2'>
                   <ul className='flex flex-wrap p-2'>
-                    {note.tags.map(tag => (
+                    {note.tags && note.tags.map(tag => (
                       <li
                         key={tag}
                         className='tag-item px-3 py-1 rounded bg-gray-200 text-gray-800'

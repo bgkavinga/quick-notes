@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { MdEditNote,MdLink } from "react-icons/md";
+import { FaEdit,FaLink } from "react-icons/fa";
 import SearchBox from './SearchBox'; // Import the SearchBox component
 import { useNavigate } from 'react-router-dom';
 import { useNoteContext } from '@/context/NoteContext';
@@ -7,7 +7,7 @@ import StorageUtil from '@/utils/storageUtil';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { notes, setNotes,setFilteredNotes, allTags,setNotification,setAllTags } = useNoteContext()
+  const { notes, setNotes,setFilteredNotes, setNotification } = useNoteContext()
   const onAddClick = useCallback(() => {
     navigate(`/note`);
   },[]);
@@ -24,15 +24,13 @@ const Header: React.FC = () => {
       const firstFilteredNote = filtered[0];
       navigate(`/note-detail/${firstFilteredNote.id}`)
     }else{
+      const timestamp = new Date().toISOString();
       const contentHtml = `- [${title}](${url})`
-      const newNote = { id:String(Date.now()), title:title || '', content:contentHtml || '', tags:['html'] };
+      const newNote = { id:String(Date.now()), title:title || '', content:contentHtml || '', timestamp:timestamp,tags:[] };
       const updatedNotes =  [...notes, newNote];
   
-      const updatedTags = [...new Set([...allTags, ...newNote.tags])];
       setNotes(updatedNotes);
-  
       setFilteredNotes(updatedNotes);
-      setAllTags(updatedTags);
       StorageUtil.setItem('notes',updatedNotes);
       setNotification('Link saved successfully!'); // Set notification
       navigate('/')
@@ -49,13 +47,13 @@ const Header: React.FC = () => {
         onClick={onAddClick}
         className="bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-full flex items-center space-x-1 ml-4"
       >
-        <MdEditNote  />
+        <FaEdit  className='text-xl cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 ' />
       </button>
       <button
         onClick={onAddLinkClick}
         className="bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-full flex items-center space-x-1 ml-4"
       >
-        <MdLink />
+        <FaLink className='text-xl cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 ' />
       </button>
     </header>
   );
