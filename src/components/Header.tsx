@@ -24,7 +24,7 @@ const Header: React.FC = () => {
       const firstFilteredNote = filtered[0];
       navigate(`/note-detail/${firstFilteredNote.id}`)
     }else{
-      const contentHtml = `<a href='${url}' target='_blank' >${title}</a>`;
+      const contentHtml = `[${title}](${url})`
       const newNote = { id:String(Date.now()), title:title || '', content:contentHtml || '', tags:['html'] };
       const updatedNotes =  [...notes, newNote];
   

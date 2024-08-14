@@ -1,25 +1,19 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNoteContext } from '@/context/NoteContext'
-import ReactMarkdown from 'react-markdown'
-import { FaCopy,FaTrash,FaEdit } from 'react-icons/fa'
+import {FaTrash, FaEdit } from 'react-icons/fa'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import MarkdownRenderer from '@/components/MarkdownRenderer'
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
-  const { notes, filteredNotes, allTags, setFilteredNotes, setNotification } =
+  const { notes, filteredNotes, allTags, setFilteredNotes } =
     useNoteContext()
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   const handleNoteClick = (id: string) => {
     navigate(`/note/${id}`)
-  }
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setNotification('Code copied to clipboard!')
-    })
   }
 
   const handleTagClick = (tag: string) => {
@@ -42,36 +36,7 @@ const HomePage: React.FC = () => {
   }
 
   const handleDeleteNote = (noteId: string) => {
-    navigate(`/note-delete/${noteId}`);
-  };
-
-  const renderers: {
-    [key: string]: React.FC<{
-      node: React.ReactNode
-      inline?: boolean
-      className?: string
-      children?: React.ReactNode
-    }>
-  } = {
-    code: ({ node, inline, className, children, ...props }) => {
-      const match = /language-(\w+)/.exec(className || '')
-      const code = String(children).replace(/\n$/, '')
-      return !inline && match ? (
-        <div className='relative'>
-          <code>{code}</code>
-          <button
-            onClick={() => handleCopy(code)}
-            className='copy-button absolute right-2 px-2 py-1 bg-blue-500 text-white rounded cursor-pointer transition-colors duration-300 hover:bg-blue-700'
-          >
-            <FaCopy className='inline-block' />
-          </button>
-        </div>
-      ) : (
-        <code className={`${className} p-4 rounded`} {...props}>
-          {code}
-        </code>
-      )
-    }
+    navigate(`/note-delete/${noteId}`)
   }
 
   return (
@@ -113,19 +78,7 @@ const HomePage: React.FC = () => {
                     {note.title ? note.title : 'Untitled'}
                   </h1>
                 </div>
-                {note.tags.includes('html') ? (
-                  <div
-                    className='p-2 prose prose-lg'
-                    dangerouslySetInnerHTML={{ __html: note.content }}
-                  />
-                ) : (
-                  <ReactMarkdown
-                    className='note-content mt-2 prose prose-lg max-w-none p-2'
-                    components={renderers}
-                  >
-                    {note.content}
-                  </ReactMarkdown>
-                )}
+                <MarkdownRenderer content={note.content}/ >
                 <div className='tags-list flex justify-between items-center mt-2'>
                   <ul className='flex flex-wrap p-2'>
                     {note.tags.map(tag => (
@@ -137,13 +90,13 @@ const HomePage: React.FC = () => {
                       </li>
                     ))}
                   </ul>
-                  <div className="flex space-x-4 p-2">
+                  <div className='flex space-x-4 p-2'>
                     <FaEdit
-                      className="cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg"
+                      className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
                       onClick={() => handleNoteClick(note.id)}
                     />
                     <FaTrash
-                      className="cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg"
+                      className='cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg'
                       onClick={() => handleDeleteNote(note.id)}
                     />
                   </div>
