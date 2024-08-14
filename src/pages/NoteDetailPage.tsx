@@ -24,7 +24,7 @@ const NoteDetailPage: React.FC = () => {
         {note && (
           <FaEdit
             className='cursor-pointer text-xl'
-            onClick={() => navigate(`/note/${note.id}`)}
+            onClick={() => navigate(`/note-update/${note.id}`)}
           />
         )}
       </header>

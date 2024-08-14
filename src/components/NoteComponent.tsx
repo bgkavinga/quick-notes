@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { FaTrash, FaEdit } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
-import { Note } from '@/context/NoteContext'
+import { Note, useNoteContext } from '@/context/NoteContext'
 
 const NoteComponent: React.FC<Note> = note => {
   const navigate = useNavigate()
+  const { selectedTags, handleTagClick } = useNoteContext()
+
 
   const handleNoteClick = (id: string) => {
-    navigate(`/note/${id}`)
+    navigate(`/note-update/${id}`)
   }
 
   const handleDeleteNote = (noteId: string) => {
@@ -45,14 +47,19 @@ const NoteComponent: React.FC<Note> = note => {
 
       <MarkdownRenderer content={note.content} />
       <div className='tags-list flex justify-between items-center mt-2'>
-        <ul className='flex flex-wrap p-2'>
+        <ul className='flex flex-wrap p-2 space-x-2'>
           {note.tags &&
             note.tags.map(tag => (
               <li
                 key={tag}
-                className='tag-item px-3 py-1 rounded bg-gray-200 text-gray-800'
+                className={`tag-item px-3 py-1 cursor-pointer transition-colors duration-300 ${
+                  selectedTags.includes(tag)
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-800'
+                }`}
+                onClick={() => handleTagClick(tag)}
               >
-                {tag}
+                #{tag}
               </li>
             ))}
         </ul>

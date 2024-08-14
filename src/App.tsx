@@ -38,7 +38,7 @@ const App: React.FC = () => {
   return (
     <Routes>
         <Route path="/" element={<HomePage/>} />
-        <Route path="/note/:id?" element={<NoteUpdatePage />} />
+        <Route path="/note-update/:id?" element={<NoteUpdatePage />} />
         <Route path="/note-detail/:id?" element={<NoteDetailPage />} />
         <Route path="/note-delete/:id" element={<DeleteNote />} />
         <Route path="*" element={<NoRoutePage />} />

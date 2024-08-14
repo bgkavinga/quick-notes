@@ -19,7 +19,7 @@ const DeleteNote = () => {
   } 
 
   const handleCancel = ()=>{
-    navigate(`/note/${id}`);
+    navigate(`/note-edit/${id}`);
   }
 
   return (

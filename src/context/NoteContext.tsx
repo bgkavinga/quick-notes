@@ -29,6 +29,7 @@ type NoteContextType = {
   setSelectedTags: (tags: string[]) => void
   clearNotification: () => void // Add clearNotification function
   setAllTags: (tags: string[]) => void
+  handleTagClick:(tag:string) => void
 }
 
 export const NoteContext = createContext<NoteContextType | undefined>(undefined)
@@ -76,6 +77,25 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
     setFilteredNotesState(sortedNotes);
   };
 
+  const handleTagClick = (tag: string) => {
+    let updatedSelectedTags
+    if (selectedTags.includes(tag)) {
+      updatedSelectedTags = selectedTags.filter(t => t !== tag)
+    } else {
+      updatedSelectedTags = [...selectedTags, tag]
+    }
+    setSelectedTags(updatedSelectedTags)
+
+    if (updatedSelectedTags.length === 0) {
+      setFilteredNotes(notes)
+    } else {
+      const filtered = notes.filter(note =>
+        updatedSelectedTags.some(t => note.tags.includes(t))
+      )
+      setFilteredNotes(filtered)
+    }
+  }
+
   
 
 
@@ -94,7 +114,8 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         setSelectedTags,
         allTags,
         setAllTags,
-        clearNotification
+        clearNotification,
+        handleTagClick
       }}
     >
       {children}

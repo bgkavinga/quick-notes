@@ -132,9 +132,9 @@ const NoteUpdatePage: React.FC = () => {
 
           <MdEditor
             value={content}
-            style={{ height: '700px', width: '100%' }} // Increased the height and set width to 100%
+            style={{ height: '300px', width: '100%' }} // Increased the height and set width to 100%
             onChange={handleEditorChange}
-            renderHTML={content => <ReactMarkdown>{content}</ReactMarkdown>}
+            renderHTML={(content: string | null | undefined) => <ReactMarkdown>{content}</ReactMarkdown>}
             view={{ menu: true, md: true, html: false }}
             markdownClass='!text-lg'
           />
@@ -142,7 +142,7 @@ const NoteUpdatePage: React.FC = () => {
         </div>
 
         <div className='mb-4'>
-          <h2 className='text-xl font-bold mb-2'>Tags</h2>
+          <h2 className='text-l font-bold mb-2'>Tags</h2>
           <div className='flex flex-wrap mb-4'>
             {allTags.map((tag, index) => (
               <span
