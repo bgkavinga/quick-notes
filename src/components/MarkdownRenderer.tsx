@@ -25,9 +25,8 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
     }>
   } = {
     code: ({ node, inline, className, children, ...props }) => {
-      const match = /language-(\w+)/.exec(className || '')
       const code = String(children).replace(/\n$/, '')
-      return !inline && match ? (
+      return !inline ? (
         <div className='relative'>
           <code>{code}</code>
           <button

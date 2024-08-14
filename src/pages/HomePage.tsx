@@ -39,6 +39,10 @@ const HomePage: React.FC = () => {
     navigate(`/note-delete/${noteId}`)
   }
 
+  const titleClickHandler = (id: string) => {
+    navigate(`/note-detail/${id}`);
+  };
+
   return (
     <>
       <Header />
@@ -74,7 +78,7 @@ const HomePage: React.FC = () => {
                 className='note-item bg-white rounded-lg shadow '
               >
                 <div className='relative group'>
-                  <h1 className='text-lg font-bold bg-gray-200 text-gray-800 p-2 rounded'>
+                  <h1 onClick = {() => titleClickHandler(note.id)} className='text-lg font-bold bg-gray-200 text-gray-800 p-2 rounded'>
                     {note.title ? note.title : 'Untitled'}
                   </h1>
                 </div>
