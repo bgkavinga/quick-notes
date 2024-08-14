@@ -23,7 +23,7 @@ const NoteComponent: React.FC<Note> = note => {
   return (
     <>
       <div className='relative group'>
-        <div className='flex items-center bg-gray-200 text-gray-800 justify-between'>
+        <div className='flex items-center bg-slate-200 text-gray-800 justify-between'>
           <h1
             onClick={() => titleClickHandler(note.id)}
             className='text-lg font-bold p-2 cursor-pointer flex-grow'
