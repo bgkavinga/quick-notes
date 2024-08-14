@@ -7,7 +7,7 @@ import React, {
   useContext
 } from 'react'
 
-type Note = {
+export type Note = {
   id: string
   title: string
   content: string

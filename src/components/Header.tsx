@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { FaEdit,FaLink } from "react-icons/fa";
+import { FaPlus,FaLink } from "react-icons/fa";
 import SearchBox from './SearchBox'; // Import the SearchBox component
 import { useNavigate } from 'react-router-dom';
 import { useNoteContext } from '@/context/NoteContext';
@@ -25,7 +25,7 @@ const Header: React.FC = () => {
       navigate(`/note-detail/${firstFilteredNote.id}`)
     }else{
       const timestamp = new Date().toISOString();
-      const contentHtml = `- [${title}](${url})`
+      const contentHtml = `[${title}](${url})`
       const newNote = { id:String(Date.now()), title:title || '', content:contentHtml || '', timestamp:timestamp,tags:[] };
       const updatedNotes =  [...notes, newNote];
   
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
         onClick={onAddClick}
         className="bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-full flex items-center space-x-1 ml-4"
       >
-        <FaEdit  className='text-xl cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 ' />
+        <FaPlus  className='text-xl cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 ' />
       </button>
       <button
         onClick={onAddLinkClick}

@@ -5,6 +5,7 @@ import NoteUpdatePage from '@/pages/NoteUpdatePage';
 import NoteDetailPage from '@/pages/NoteDetailPage';
 import DeleteNote from '@/pages/DeleteNote';
 import StorageUtil from '@/utils/storageUtil';
+import NoRoutePage from '@/pages/NoRoutePage';
 
 const App: React.FC = () => {
 
@@ -40,6 +41,7 @@ const App: React.FC = () => {
         <Route path="/note/:id?" element={<NoteUpdatePage />} />
         <Route path="/note-detail/:id?" element={<NoteDetailPage />} />
         <Route path="/note-delete/:id" element={<DeleteNote />} />
+        <Route path="*" element={<NoRoutePage />} />
     </Routes>
   );
 };

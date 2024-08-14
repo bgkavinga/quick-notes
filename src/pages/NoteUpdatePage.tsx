@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useNoteContext } from '@/context/NoteContext'
 import StorageUtil from '@/utils/storageUtil'
+import MdEditor from 'react-markdown-editor-lite'
+import 'react-markdown-editor-lite/lib/index.css'
+import ReactMarkdown from 'react-markdown'
+import { FaArrowLeft } from 'react-icons/fa';
+
 
 const NoteUpdatePage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -26,13 +31,9 @@ const NoteUpdatePage: React.FC = () => {
     if (note) {
       setTitle(note.title)
       setContent(note.content)
-      setTags(note.tags)
+      setTags(note.tags ? note.tags : [])
     }
   }, [note])
-
-  const handleCancel = () => {
-    navigate('/')
-  }
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && newTag.trim() && !tags.includes(newTag.trim())) {
@@ -53,8 +54,12 @@ const NoteUpdatePage: React.FC = () => {
     }
   }
 
-  const handleSave = () => {
-    const timestamp = new Date().toISOString();
+  const save = async () => {
+    if (!title.trim() || !content.trim()) {
+      setNotification('Title and content cannot be empty.')
+      return
+    }
+    const timestamp = new Date().toISOString()
     const newNote = {
       id: note?.id ? String(id) : String(Date.now()),
       title,
@@ -69,62 +74,37 @@ const NoteUpdatePage: React.FC = () => {
     setNotes(updatedNotes)
     setFilteredNotes(updatedNotes)
     setAllTags(updatedTags)
-    StorageUtil.setItem('notes', updatedNotes)
-    setNotification('Note saved successfully!') // Set notification
-    navigate('/')
+    await StorageUtil.setItem('notes', updatedNotes)
+    setNotification('Note saved successfully!')
   }
 
-  const handleDelete = () => {
-    navigate(`/note-delete/${note?.id}`)
+  const handleEditorChange = ({ text }: { text: string }) => {
+    setContent(text)
   }
 
-  const handleAddLink = async () => {
-    // Get the current tab URL using the Chrome extension API
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    const url = tab.url
-    const title = tab.title
-    const markdownLink = `[${title}](${url})\n`
-
-    // Insert the markdown link at the cursor position in the text area
-    const textarea = document.getElementById(
-      'noteContent'
-    ) as HTMLTextAreaElement
-    if (textarea) {
-      const start = textarea.selectionStart
-      const end = textarea.selectionEnd
-      const text = textarea.value
-      textarea.value = text.slice(0, start) + markdownLink + text.slice(end)
-      setContent(textarea.value)
-      textarea.selectionStart = textarea.selectionEnd =
-        start + markdownLink.length
+  useEffect(() => {
+    const saveActionWrapper = async () => {
+      await save()
     }
-  }
+    saveActionWrapper()
+  }, [title, content, tags])
 
   return (
     <>
-      <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
+       <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
+      <div className='flex items-center'>
+        <FaArrowLeft className='mr-2 cursor-pointer text-xl' onClick={()=>navigate('/')}/>
         <h1 className='text-xl'>{note ? 'Edit Note' : 'New Note'}</h1>
-        <div>
-          <button
-            onClick={handleCancel}
-            className='bg-gray-700 hover:bg-gray-500 text-white font-bold py-1 px-4 rounded mr-2'
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleDelete}
-            className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mr-2'
-          >
-            Delete
-          </button>
-          <button
-            onClick={handleSave}
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded mr-2'
-          >
-            Save
-          </button>
-        </div>
-      </header>
+      </div>
+      <div>
+        <button
+          onClick={()=>{navigate(`/note-delete/${note?.id}`)}}
+          className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mr-2'
+        >
+          Delete
+        </button>
+      </div>
+    </header>
 
       <div className='container mx-auto p-4 mt-12'>
         <div className='mb-4'>
@@ -149,19 +129,14 @@ const NoteUpdatePage: React.FC = () => {
           >
             Content
           </label>
-          <button
-            onClick={handleAddLink}
-            className='bg-green-500 text-white px-4 py-2 rounded cursor-pointer transition-colors duration-300 hover:bg-green-700 mb-2'
-          >
-            Add Current Page Link
-          </button>
-          <textarea
-            id='noteContent'
+
+          <MdEditor
             value={content}
-            onChange={e => setContent(e.target.value)}
-            className='w-full p-3 mb-2 border border-gray-300 rounded-lg text-lg font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm'
-            placeholder='Content'
-            rows={6} // Decreased the number of rows
+            style={{ height: '700px', width: '100%' }} // Increased the height and set width to 100%
+            onChange={handleEditorChange}
+            renderHTML={content => <ReactMarkdown>{content}</ReactMarkdown>}
+            view={{ menu: true, md: true, html: false }}
+            markdownClass='!text-lg'
           />
           <small className='block text-gray-600 mb-4'>Supports Markdown</small>
         </div>

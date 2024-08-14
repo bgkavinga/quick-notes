@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useNoteContext } from '@/context/NoteContext'
 import { FaEdit,FaArrowLeft } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
+import truncate from '@/utils/truncate'
 
 const NoteDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -11,21 +12,11 @@ const NoteDetailPage: React.FC = () => {
 
   const note = notes.find(note => note.id === id)
 
-  const truncate = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text
-    return text.substring(0, maxLength) + '...'
-  }
-
   return (
     <>
      <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
         <div className='flex items-center'>
-          <button
-            onClick={() => navigate('/')}
-            className='hover:bg-gray-500 text-white font-bold py-1 rounded flex items-center'
-          >
-            <FaArrowLeft className='mr-2 text-xl' />
-          </button>
+          <FaArrowLeft className='mr-2 text-xl cursor-pointer' onClick={() => navigate('/')}/>
           <h1 className='text-xl'>
             {truncate(note?.title || '', 50)}
           </h1>
