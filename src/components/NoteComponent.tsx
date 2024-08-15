@@ -1,15 +1,17 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaTrash, FaEdit } from 'react-icons/fa'
+import { FaTrash, FaEdit, FaCopy } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
 import { Note, useNoteContext } from '@/context/NoteContext'
 import useTagManager from '@/hooks/useTagManager'
+import useNotificationManager from '@/hooks/useNotificationManager'
 
 const NoteComponent: React.FC<Note> = note => {
   const navigate = useNavigate()
   const { selectedTags } = useNoteContext()
   const { handleTagClick } = useTagManager()
+  const { setNotification } = useNotificationManager()
 
   const handleNoteClick = (id?: string) => {
     navigate(`/note-update/${id}`)
@@ -23,6 +25,11 @@ const NoteComponent: React.FC<Note> = note => {
     navigate(`/note-detail/${id}`)
   }
 
+  const handleCopyNote = (content: string) => {
+    navigator.clipboard.writeText(content)
+    setNotification('content copied to the clipboard')
+  }
+
   return (
     <>
       <div className='relative group'>
@@ -33,10 +40,14 @@ const NoteComponent: React.FC<Note> = note => {
           >
             {note.title ? truncate(note.title || '', 50) : 'Untitled'}
           </h1>
-          <div className='flex space-x-2 p-2 ml-2'>
+          <div className='flex space-x-4 p-2 ml-2'>
             <FaEdit
               className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
               onClick={() => handleNoteClick(note.id)}
+            />
+            <FaCopy
+              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
+              onClick={() => handleCopyNote(note.content)}
             />
             <FaTrash
               className='cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg'

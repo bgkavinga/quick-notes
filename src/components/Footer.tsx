@@ -1,32 +1,38 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useNoteContext } from '@/context/NoteContext'
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import StorageUtil from '@/utils/storageUtil'
+import useNotificationManager from '@/hooks/useNotificationManager'
 
 const Footer: React.FC = () => {
-  const { notes, notification, setNotes, setFilteredNotes, clearNotification } =
-    useNoteContext()
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        clearNotification()
-      }, 3000) // Hide notification after 3 seconds
+  const { notes, setNotes, setFilteredNotes } = useNoteContext()
+  const { notification,setNotification } = useNotificationManager()
 
-      return () => clearTimeout(timer) // Cleanup the timer on component unmount
-    }
-  }, [notification, clearNotification])
+  // Function to generate a timestamp string
+  const generateTimestamp = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    const seconds = String(now.getSeconds()).padStart(2, '0')
+    return `${year}${month}${day}_${hours}${minutes}${seconds}`
+  }
 
   const handleExportClick = () => {
     const notesJson = JSON.stringify(notes, null, 2)
     const blob = new Blob([notesJson], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
+    const timestamp = generateTimestamp()
     link.href = url
-    link.download = 'notes.json'
+    link.download = `notes_${timestamp}.json`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+    setNotification('data exported successfully!')
   }
 
   const handleImportClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,13 +52,14 @@ const Footer: React.FC = () => {
       }
       reader.readAsText(file)
     }
+    setNotification('data imported successfully!')
   }
 
   return (
     <footer className='fixed bottom-0 left-0 w-full bg-gray-800 text-white py-2 px-4'>
       <div className='container mx-auto flex justify-between items-center'>
         {notification && (
-          <div className='text-white p-2 rounded bg-gray-700'>
+          <div className='text-white p-2 rounded '>
             <p>{notification}</p>
           </div>
         )}

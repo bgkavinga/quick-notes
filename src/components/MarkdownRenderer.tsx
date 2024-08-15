@@ -15,6 +15,16 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
     })
   }
 
+  const containsLineBreak = (children: React.ReactNode): boolean => {
+    if (typeof children === 'string') {
+      return /\r|\n/.test(children)
+    }
+    if (Array.isArray(children)) {
+      return children.some(child => containsLineBreak(child))
+    }
+    return false
+  }
+
   const renderers: {
     [key: string]: React.FC<{
       node: React.ReactNode
@@ -24,14 +34,15 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
       href?: string
     }>
   } = {
-    code: ({ node, inline, className, children, ...props }) => {
+    code: ({ node, className, children, ...props }) => {
+      const hasLineBreak = containsLineBreak(children)
       const code = String(children).replace(/\n$/, '')
-      return !inline ? (
+      return hasLineBreak ? (
         <div className='relative'>
           <code>{code}</code>
           <button
             onClick={() => handleCopy(code)}
-            className='copy-button absolute right-2 px-2 py-1 bg-blue-500 text-white rounded cursor-pointer transition-colors duration-300 hover:bg-blue-700'
+            className='copy-button absolute right-2 px-2 text-white rounded cursor-pointer transition-colors duration-300 hover:bg-gray-700'
           >
             <FaCopy className='inline-block' />
           </button>
@@ -53,7 +64,7 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
 
   return (
     <ReactMarkdown
-      className='note-content mt-2 prose prose-lg max-w-none p-2'
+      className='note-content mt-2 prose max-w-none p-2'
       components={renderers}
     >
       {content}

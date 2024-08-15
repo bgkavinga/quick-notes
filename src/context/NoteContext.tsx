@@ -27,7 +27,6 @@ type NoteContextType = {
   setCurrentNote: (note: Note) => void
   setNotification: (notification: string | null) => void
   setSelectedTags: (tags: string[]) => void
-  clearNotification: () => void // Add clearNotification function
   setAllTags: (tags: string[]) => void
 }
 
@@ -57,10 +56,6 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
 
     fetchNotes()
   }, [])
-
-  const clearNotification = () => {
-    setNotification(null)
-  }
 
   const setNotes = (newNotes: Note[]) => {
     const sortedNotes = newNotes.sort(
@@ -95,8 +90,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         setNotification,
         setSelectedTags,
         allTags,
-        setAllTags,
-        clearNotification
+        setAllTags
       }}
     >
       {children}
