@@ -4,21 +4,22 @@ import { FaTrash, FaEdit } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
 import { Note, useNoteContext } from '@/context/NoteContext'
+import useTagManager from '@/hooks/useTagManager'
 
 const NoteComponent: React.FC<Note> = note => {
   const navigate = useNavigate()
-  const { selectedTags, handleTagClick } = useNoteContext()
+  const { selectedTags } = useNoteContext()
+  const { handleTagClick } = useTagManager()
 
-
-  const handleNoteClick = (id: string) => {
+  const handleNoteClick = (id?: string) => {
     navigate(`/note-update/${id}`)
   }
 
-  const handleDeleteNote = (noteId: string) => {
+  const handleDeleteNote = (noteId?: string) => {
     navigate(`/note-delete/${noteId}`)
   }
 
-  const titleClickHandler = (id: string) => {
+  const titleClickHandler = (id?: string) => {
     navigate(`/note-detail/${id}`)
   }
 

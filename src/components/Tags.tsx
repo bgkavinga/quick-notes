@@ -1,12 +1,11 @@
 // Tags.tsx
-import { useNoteContext } from '@/context/NoteContext';
+import { useNoteContext } from '@/context/NoteContext'
+import useTagManager from '@/hooks/useTagManager'
 import React from 'react'
 
-
-
-const Tags: React.FC= () => {
-  const { allTags, selectedTags, handleTagClick } = useNoteContext()
-
+const Tags: React.FC = () => {
+  const { allTags, selectedTags } = useNoteContext()
+  const { handleTagClick } = useTagManager()
 
   return (
     <div className='tags-container bg-gray-100 border-b border-gray-300 mt-12'>
@@ -30,7 +29,7 @@ const Tags: React.FC= () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Tags;
+export default Tags

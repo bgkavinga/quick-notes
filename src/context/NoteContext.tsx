@@ -8,11 +8,11 @@ import React, {
 } from 'react'
 
 export type Note = {
-  id: string
+  id?: string
   title: string
   content: string
-  tags: string[],
-  timestamp: string
+  tags: string[]
+  timestamp?: string
 }
 
 type NoteContextType = {
@@ -29,7 +29,6 @@ type NoteContextType = {
   setSelectedTags: (tags: string[]) => void
   clearNotification: () => void // Add clearNotification function
   setAllTags: (tags: string[]) => void
-  handleTagClick:(tag:string) => void
 }
 
 export const NoteContext = createContext<NoteContextType | undefined>(undefined)
@@ -59,45 +58,28 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
     fetchNotes()
   }, [])
 
-
   const clearNotification = () => {
     setNotification(null)
   }
 
   const setNotes = (newNotes: Note[]) => {
-    const sortedNotes = newNotes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    const sortedNotes = newNotes.sort(
+      (a, b) =>
+        new Date(b.timestamp||'').getTime() - new Date(a.timestamp||'').getTime()
+    )
     setAllTags([
-        ...new Set<string>(sortedNotes.flatMap((note: Note) => note.tags))
-      ])
-    setNotesState(sortedNotes);
-  };
-
-  const setFilteredNotes = (newNotes: Note[]) => {
-    const sortedNotes = newNotes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    setFilteredNotesState(sortedNotes);
-  };
-
-  const handleTagClick = (tag: string) => {
-    let updatedSelectedTags
-    if (selectedTags.includes(tag)) {
-      updatedSelectedTags = selectedTags.filter(t => t !== tag)
-    } else {
-      updatedSelectedTags = [...selectedTags, tag]
-    }
-    setSelectedTags(updatedSelectedTags)
-
-    if (updatedSelectedTags.length === 0) {
-      setFilteredNotes(notes)
-    } else {
-      const filtered = notes.filter(note =>
-        updatedSelectedTags.some(t => note.tags.includes(t))
-      )
-      setFilteredNotes(filtered)
-    }
+      ...new Set<string>(sortedNotes.flatMap((note: Note) => note.tags))
+    ])
+    setNotesState(sortedNotes)
   }
 
-  
-
+  const setFilteredNotes = (newNotes: Note[]) => {
+    const sortedNotes = newNotes.sort(
+      (a, b) =>
+        new Date(b.timestamp||'').getTime() - new Date(a.timestamp||'').getTime()
+    )
+    setFilteredNotesState(sortedNotes)
+  }
 
   return (
     <NoteContext.Provider
@@ -114,8 +96,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         setSelectedTags,
         allTags,
         setAllTags,
-        clearNotification,
-        handleTagClick
+        clearNotification
       }}
     >
       {children}

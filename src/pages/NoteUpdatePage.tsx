@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useNoteContext } from '@/context/NoteContext'
-import StorageUtil from '@/utils/storageUtil'
 import MdEditor from 'react-markdown-editor-lite'
 import 'react-markdown-editor-lite/lib/index.css'
 import ReactMarkdown from 'react-markdown'
-import { FaArrowLeft } from 'react-icons/fa';
-
+import { FaArrowLeft } from 'react-icons/fa'
+import useNoteManager from '@/hooks/useNoteManager'
+import { Note } from '@/context/NoteContext'
 
 const NoteUpdatePage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const {
-    notes,
-    setNotes,
-    setFilteredNotes,
-    allTags,
-    setNotification,
-    setAllTags
-  } = useNoteContext()
+  const { notes, allTags } = useNoteContext()
+  const { saveNote } = useNoteManager()
 
   const note = notes.find(note => note.id === id)
 
@@ -54,57 +48,46 @@ const NoteUpdatePage: React.FC = () => {
     }
   }
 
-  const save = async () => {
-    if (!title.trim() || !content.trim()) {
-      setNotification('Title and content cannot be empty.')
-      return
-    }
-    const timestamp = new Date().toISOString()
-    const newNote = {
-      id: note?.id ? String(id) : String(Date.now()),
-      title,
-      content,
-      tags,
-      timestamp
-    }
-    const updatedNotes = id
-      ? notes.map(note => (note.id === id ? newNote : note))
-      : [...notes, newNote]
-    const updatedTags = [...new Set([...allTags, ...newNote.tags])]
-    setNotes(updatedNotes)
-    setFilteredNotes(updatedNotes)
-    setAllTags(updatedTags)
-    await StorageUtil.setItem('notes', updatedNotes)
-    setNotification('Note saved successfully!')
-  }
-
   const handleEditorChange = ({ text }: { text: string }) => {
     setContent(text)
   }
 
   useEffect(() => {
     const saveActionWrapper = async () => {
-      await save()
+      const newNote = {
+        id: note?.id ? String(id) : undefined,
+        title,
+        content,
+        tags
+      }
+      return await saveNote(newNote)
     }
-    saveActionWrapper()
+    saveActionWrapper().then((note?: Note) => {
+      note ? navigate(`/note-update/${note.id}`) : ''
+    })
   }, [title, content, tags])
 
   return (
     <>
-       <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
-      <div className='flex items-center'>
-        <FaArrowLeft className='mr-2 cursor-pointer text-xl' onClick={()=>navigate('/')}/>
-        <h1 className='text-xl'>{note ? 'Edit Note' : 'New Note'}</h1>
-      </div>
-      <div>
-        <button
-          onClick={()=>{navigate(`/note-delete/${note?.id}`)}}
-          className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mr-2'
-        >
-          Delete
-        </button>
-      </div>
-    </header>
+      <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
+        <div className='flex items-center'>
+          <FaArrowLeft
+            className='mr-2 cursor-pointer text-xl'
+            onClick={() => navigate('/')}
+          />
+          <h1 className='text-xl'>{note ? 'Edit Note' : 'New Note'}</h1>
+        </div>
+        <div>
+          <button
+            onClick={() => {
+              navigate(`/note-delete/${note?.id}`)
+            }}
+            className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded mr-2'
+          >
+            Delete
+          </button>
+        </div>
+      </header>
 
       <div className='container mx-auto p-4 mt-12'>
         <div className='mb-4'>
@@ -134,7 +117,9 @@ const NoteUpdatePage: React.FC = () => {
             value={content}
             style={{ height: '300px', width: '100%' }} // Increased the height and set width to 100%
             onChange={handleEditorChange}
-            renderHTML={(content: string | null | undefined) => <ReactMarkdown>{content}</ReactMarkdown>}
+            renderHTML={(content: string | null | undefined) => (
+              <ReactMarkdown>{content}</ReactMarkdown>
+            )}
             view={{ menu: true, md: true, html: false }}
             markdownClass='!text-lg'
           />
