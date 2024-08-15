@@ -1,48 +1,37 @@
-// DeleteNote.tsx
 import { useNavigate, useParams } from 'react-router-dom';
-import StorageUtil from '@/utils/storageUtil'
-import { useNoteContext } from '@/context/NoteContext'
+import useNoteManager from '@/hooks/useNoteManager';
 
 const DeleteNote = () => {
-    const { notes, setNotes,setFilteredNotes,setNotification } = useNoteContext()
+
+  const {deleteNote} = useNoteManager()
   const { id } = useParams();
   const navigate = useNavigate();
 
   
   const handleDelete = ()=>{
-    const updatedNotes = notes.filter((note) => note.id !== id);
-    setNotes(updatedNotes);
-    setFilteredNotes(updatedNotes);
-    StorageUtil.setItem('notes', updatedNotes);
-    setNotification('Note deleted successfully!');
+    deleteNote(id)
     navigate('/');
-  } 
-
-  const handleCancel = ()=>{
-    navigate(`/note-edit/${id}`);
   }
 
   return (
-    <>
-     <div className="bg-white rounded-lg p-6 w-96">
-        <h2 className="text-xl font-semibold mb-4">Confirm Deletion</h2>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h2 className="text-xl font-semibold mb-4">Confirm Deletion</h2>
         <p className="mb-6">Are you sure you want to delete this note?</p>
         <div className="flex justify-end">
           <button
             onClick={handleDelete}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2"
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2 transition-colors duration-300"
           >
             Yes, Delete
           </button>
           <button
-            onClick={handleCancel}
-            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => navigate(-1)}
+            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
           >
             Cancel
           </button>
         </div>
-      </div>
-    </>
+    </div>
   );
 };
 

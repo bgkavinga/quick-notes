@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaTrash, FaEdit, FaCopy } from 'react-icons/fa'
+import { FaTrash, FaEdit, FaCopy,FaEye } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
 import { Note, useNoteContext } from '@/context/NoteContext'
@@ -13,18 +13,6 @@ const NoteComponent: React.FC<Note> = note => {
   const { handleTagClick } = useTagManager()
   const { setNotification } = useNotificationManager()
 
-  const handleNoteClick = (id?: string) => {
-    navigate(`/note-update/${id}`)
-  }
-
-  const handleDeleteNote = (noteId?: string) => {
-    navigate(`/note-delete/${noteId}`)
-  }
-
-  const titleClickHandler = (id?: string) => {
-    navigate(`/note-detail/${id}`)
-  }
-
   const handleCopyNote = (content: string) => {
     navigator.clipboard.writeText(content)
     setNotification('content copied to the clipboard')
@@ -34,16 +22,17 @@ const NoteComponent: React.FC<Note> = note => {
     <>
       <div className='relative group'>
         <div className='flex items-center bg-slate-200 text-gray-800 justify-between'>
-          <h1
-            onClick={() => titleClickHandler(note.id)}
-            className='text-lg font-bold p-2 cursor-pointer flex-grow'
-          >
+          <h1 className='text-lg font-bold p-2 cursor-pointer flex-grow'>
             {note.title ? truncate(note.title || '', 50) : 'Untitled'}
           </h1>
           <div className='flex space-x-4 p-2 ml-2'>
             <FaEdit
               className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
-              onClick={() => handleNoteClick(note.id)}
+              onClick={() => navigate(`/note-update/${note.id}`)}
+            />
+            <FaEye
+              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
+              onClick={() => navigate(`/note-detail/${note.id}`)}
             />
             <FaCopy
               className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
@@ -51,7 +40,7 @@ const NoteComponent: React.FC<Note> = note => {
             />
             <FaTrash
               className='cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg'
-              onClick={() => handleDeleteNote(note.id)}
+              onClick={() =>  navigate(`/note-delete/${note.id}`)}
             />
           </div>
         </div>

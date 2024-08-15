@@ -12,7 +12,7 @@ const useNoteManager = () => {
   } = useNoteContext()
 
   const saveNote = async (newNote: Note) => {
-    const { id, title, content} = newNote
+    const { id, title, content } = newNote
     if (!title.trim() || !content.trim()) {
       setNotification('Title and content cannot be empty.')
       return
@@ -36,8 +36,17 @@ const useNoteManager = () => {
     return newNote
   }
 
+  const deleteNote = (id: string | undefined) => {
+    const updatedNotes = notes.filter(note => note.id !== id)
+    setNotes(updatedNotes)
+    setFilteredNotes(updatedNotes)
+    StorageUtil.setItem('notes', updatedNotes)
+    setNotification('Note deleted successfully!')
+  }
+
   return {
-    saveNote
+    saveNote,
+    deleteNote
   }
 }
 
