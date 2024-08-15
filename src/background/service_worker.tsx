@@ -14,6 +14,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             const activeElement = document.activeElement as HTMLInputElement | HTMLTextAreaElement
             if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
               activeElement.value += content
+              // Dispatch input event to ensure the change is recognized
+              const event = new Event('input', { bubbles: true })
+              activeElement.dispatchEvent(event)
             }
           },
           args: [note.content]
@@ -42,28 +45,35 @@ const createContextMenuItems = async () => {
         contexts: ['editable']
       })
   
+      const createdIds = new Set<string>()
+  
       contextMenuItems.forEach((note: Note) => {
         const titleParts = note.title.split('>')
         let parentId = 'parent'
   
         titleParts.forEach((part, index) => {
           const id = `${parentId}-${part.trim()}`
-          if (index === titleParts.length - 1) {
-            // Create the final note item
-            chrome.contextMenus.create({
-              id: note.id,
-              title: truncate(part.trim(), 10),
-              contexts: ['editable'],
-              parentId: parentId
-            })
+          if (!createdIds.has(id)) {
+            if (index === titleParts.length - 1) {
+              // Create the final note item
+              chrome.contextMenus.create({
+                id: note.id,
+                title: truncate(part.trim(), 30),
+                contexts: ['editable'],
+                parentId: parentId
+              })
+            } else {
+              // Create a submenu if it doesn't already exist
+              chrome.contextMenus.create({
+                id: id,
+                title: part.trim(),
+                contexts: ['editable'],
+                parentId: parentId
+              })
+              parentId = id
+            }
+            createdIds.add(id)
           } else {
-            // Create a submenu if it doesn't already exist
-            chrome.contextMenus.create({
-              id: id,
-              title: part.trim(),
-              contexts: ['editable'],
-              parentId: parentId
-            })
             parentId = id
           }
         })
