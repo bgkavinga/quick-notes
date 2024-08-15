@@ -65,7 +65,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const setNotes = (newNotes: Note[]) => {
     const sortedNotes = newNotes.sort(
       (a, b) =>
-        new Date(b.timestamp||'').getTime() - new Date(a.timestamp||'').getTime()
+        new Date(b.timestamp||'2019-07-04').getTime() - new Date(a.timestamp||'').getTime()
     )
     setAllTags([
       ...new Set<string>(sortedNotes.flatMap((note: Note) => note.tags))
@@ -76,7 +76,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const setFilteredNotes = (newNotes: Note[]) => {
     const sortedNotes = newNotes.sort(
       (a, b) =>
-        new Date(b.timestamp||'').getTime() - new Date(a.timestamp||'').getTime()
+        new Date(b.timestamp||'2019-07-04').getTime() - new Date(a.timestamp||'').getTime()
     )
     setFilteredNotesState(sortedNotes)
   }

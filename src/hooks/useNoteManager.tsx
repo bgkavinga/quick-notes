@@ -21,6 +21,8 @@ const useNoteManager = () => {
     if (!newNote.id) {
       newNote.id = String(Date.now())
     }
+    // Add or update the timestamp
+    newNote.timestamp = new Date().toISOString()
 
     const updatedNotes = id
       ? notes.map(note => (note.id === id ? newNote : note))
