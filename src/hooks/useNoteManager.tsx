@@ -5,6 +5,7 @@ const useNoteManager = () => {
   const {
     notes,
     allTags,
+    selectedTags,
     setNotes,
     setAllTags,
     setNotification,
@@ -27,9 +28,12 @@ const useNoteManager = () => {
     const updatedNotes = id
       ? notes.map(note => (note.id === id ? newNote : note))
       : [...notes, newNote]
+    const newFilteredNotes = updatedNotes.filter(note =>
+      selectedTags.every(tag => note.tags.includes(tag))
+    )
     const updatedTags = [...new Set([...allTags, ...newNote.tags])]
     setNotes(updatedNotes)
-    setFilteredNotes(updatedNotes)
+    setFilteredNotes(newFilteredNotes)
     setAllTags(updatedTags)
     await StorageUtil.setItem('notes', updatedNotes)
     setNotification('Note saved successfully!')
