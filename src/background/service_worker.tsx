@@ -83,7 +83,7 @@ const createContextMenuItems = async () => {
 
 // Listen for changes to notes and update context menu
 chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName === 'local' && changes.notes) {
+  if (areaName === 'local' && changes.context_version) {
     createContextMenuItems()
   }
 })

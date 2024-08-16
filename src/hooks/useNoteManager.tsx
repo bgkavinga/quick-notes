@@ -36,6 +36,9 @@ const useNoteManager = () => {
     setFilteredNotes(newFilteredNotes)
     setAllTags(updatedTags)
     await StorageUtil.setItem('notes', updatedNotes)
+    if(newNote.tags.includes('context')) {
+      await StorageUtil.setItem('context_version', newNote.timestamp)
+    }
     setNotification('Note saved successfully!')
     return newNote
   }
