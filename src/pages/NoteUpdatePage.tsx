@@ -4,7 +4,7 @@ import { useNoteContext } from '@/context/NoteContext'
 import MdEditor from 'react-markdown-editor-lite'
 import 'react-markdown-editor-lite/lib/index.css'
 import ReactMarkdown from 'react-markdown'
-import { FaArrowLeft,FaTrash } from 'react-icons/fa'
+import { FaArrowLeft,FaTrash,FaEye } from 'react-icons/fa'
 import useNoteManager from '@/hooks/useNoteManager'
 import { Note } from '@/context/NoteContext'
 
@@ -77,7 +77,11 @@ const NoteUpdatePage: React.FC = () => {
           />
           <h1 className='text-xl'>{note ? 'Edit Note' : 'New Note'}</h1>
         </div>
-        <div>
+        <div className='flex space-x-4 p-2 ml-2'>
+          <FaEye
+              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
+              onClick={() => navigate(`/note-detail/${note?.id}`)}
+          />
           <FaTrash
               className='cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg'
               onClick={() => navigate(`/note-delete/${note?.id}`)}
