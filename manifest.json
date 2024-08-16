@@ -18,13 +18,6 @@
     "scripting",
     "contextMenus"
   ],
-  "content_scripts": [
-    {
-      "matches": ["https://jira.corp.adobe.com/*"],
-      "js": ["src/content_scripts/jira.tsx"],
-      "css": ["src/content_scripts/styles.css.js"]
-    }
-  ],
   "background": {
     "service_worker": "src/background/service_worker.tsx"
   }
