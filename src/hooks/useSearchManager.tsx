@@ -1,8 +1,7 @@
 import { useNoteContext } from '@/context/NoteContext'
 
 const useSearchManager = () => {
-    const { notes, selectedTags, searchQuery, setSelectedTags, setFilteredNotes } =
-        useNoteContext()
+    const { notes, selectedTags, searchQuery, setSelectedTags, setFilteredNotes } = useNoteContext()
 
     const handleTagClick = (tag: string) => {
         let updatedSelectedTags
@@ -23,7 +22,7 @@ const useSearchManager = () => {
             note.tags.some(tag => tag.toLowerCase().includes(queryLower))
         );
         if (tags) {
-            if (tags.length > 0){
+            if (tags.length > 0) {
                 filteredNotes = filteredNotes.filter(note =>
                     tags.some(t => note.tags.includes(t))
                 )

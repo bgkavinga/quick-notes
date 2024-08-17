@@ -36,10 +36,6 @@ const NoteEditPage: React.FC = () => {
     }
   }
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove))
-  }
-
   const handleToggleTag = (tag: string) => {
     if (tags.includes(tag)) {
       setTags(tags.filter(t => t !== tag))
@@ -150,25 +146,6 @@ const NoteEditPage: React.FC = () => {
             placeholder='New Tag'
           />
           <small className='text-gray-500'>Press Enter to add a tag</small>
-          <div className='mt-2 flex flex-wrap'>
-            {tags.map((tag, index) => (
-              <span
-                key={index}
-                className={`inline-block rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer ${
-                  tags.includes(tag) ? 'bg-blue-200' : 'bg-gray-200'
-                }`}
-                onClick={() => handleToggleTag(tag)}
-              >
-                {tag}
-                <button
-                  onClick={() => handleRemoveTag(tag)}
-                  className='ml-2 text-red-500'
-                >
-                  &times;
-                </button>
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </>
