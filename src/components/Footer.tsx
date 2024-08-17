@@ -1,12 +1,14 @@
 import React from 'react'
 import { useNoteContext } from '@/context/NoteContext'
-import { FiDownload, FiUpload } from 'react-icons/fi'
+import { FaDownload, FaUpload, FaCog, FaHome } from 'react-icons/fa'
 import StorageUtil from '@/utils/storageUtil'
 import useNotificationManager from '@/hooks/useNotificationManager'
+import { useNavigate } from 'react-router-dom'
 
 const Footer: React.FC = () => {
   const { notes, setNotes, setFilteredNotes } = useNoteContext()
-  const { notification,setNotification } = useNotificationManager()
+  const { notification, setNotification } = useNotificationManager()
+  const navigate = useNavigate()
 
   // Function to generate a timestamp string
   const generateTimestamp = () => {
@@ -63,7 +65,10 @@ const Footer: React.FC = () => {
             <p>{notification}</p>
           </div>
         )}
-        <div className='flex items-center ml-auto'>
+        <div className='flex items-center ml-auto space-x-4'>
+          <button onClick={() => navigate('/')}>
+            <FaHome />
+          </button>
           <input
             type='file'
             accept='application/json'
@@ -71,19 +76,14 @@ const Footer: React.FC = () => {
             className='hidden'
             id='import-file'
           />
-          <label
-            htmlFor='import-file'
-            className='flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded cursor-pointer mr-4'
-          >
-            <FiDownload className='mr-2' />
-            Import
+          <label  htmlFor='import-file' className='btn'>
+            <FaDownload/>
           </label>
-          <button
-            onClick={handleExportClick}
-            className='flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded'
-          >
-            <FiUpload className='mr-2' />
-            Export
+          <button onClick={handleExportClick}>
+            <FaUpload />
+          </button>
+          <button onClick={() => navigate('/settings')}>
+            <FaCog />
           </button>
         </div>
       </div>

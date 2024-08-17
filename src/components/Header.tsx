@@ -37,21 +37,21 @@ const Header: React.FC = () => {
   }
 
   return (
-    <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center z-50'>
+    <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 space-x-4 shadow-md flex items-center z-50'>
       <div className='flex-grow'>
         <SearchBox />
       </div>
       <button
         onClick={onAddClick}
-        className='bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-full flex items-center space-x-1 ml-4'
+        className='flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded'
       >
-        <FaPlus className='text-xl cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 ' />
+        <FaPlus />
       </button>
       <button
         onClick={onAddLinkClick}
-        className='bg-gray-700 hover:bg-gray-600 text-white py-1 px-3 rounded-full flex items-center space-x-1 ml-4'
+        className='flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded'
       >
-        <FaLink className='text-xl cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 ' />
+        <FaLink  />
       </button>
     </header>
   )

@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import useNoteManager from '@/hooks/useNoteManager';
 
-const DeleteNote = () => {
+const NoteDeletePage = () => {
 
   const {deleteNote} = useNoteManager()
   const { id } = useParams();
@@ -35,4 +35,4 @@ const DeleteNote = () => {
   );
 };
 
-export default DeleteNote;
+export default NoteDeletePage;

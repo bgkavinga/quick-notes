@@ -1,17 +1,21 @@
 import { Route, Routes, useLocation, useNavigate, } from 'react-router-dom';
 import React, { useEffect,useState } from 'react';
 import HomePage from '@/pages/HomePage';
-import NoteUpdatePage from '@/pages/NoteUpdatePage';
+import NoteEditPage from '@/pages/NoteEditPage';
 import NoteDetailPage from '@/pages/NoteDetailPage';
-import DeleteNote from '@/pages/DeleteNote';
+import NoteDeletePage from '@/pages/NoteDeletePage';
 import StorageUtil from '@/utils/storageUtil';
 import NoRoutePage from '@/pages/NoRoutePage';
+import SettingsPage from '@/pages/SettingsPage';
+import useConfigManager from './hooks/useConfigManager';
+
 
 const App: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const {getConfig} = useConfigManager()
 
   // Save the current route to localStorage whenever it changes, but not on initial load
   useEffect(() => {
@@ -28,7 +32,9 @@ const App: React.FC = () => {
     const loadLastVisit = async () => {
       const lastVisitedRoute = await StorageUtil.getItem('lastVisitedRoute');
       if (lastVisitedRoute && location.pathname === '/') {
-        navigate(lastVisitedRoute);
+        if(await getConfig('persistState')){
+          navigate(lastVisitedRoute);
+        }
       }
       setIsInitialLoad(false);
     };
@@ -38,9 +44,10 @@ const App: React.FC = () => {
   return (
     <Routes>
         <Route path="/" element={<HomePage/>} />
-        <Route path="/note-update/:id?" element={<NoteUpdatePage />} />
+        <Route path="/note-update/:id?" element={<NoteEditPage />} />
         <Route path="/note-detail/:id?" element={<NoteDetailPage />} />
-        <Route path="/note-delete/:id" element={<DeleteNote />} />
+        <Route path="/note-delete/:id" element={<NoteDeletePage />} />
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<NoRoutePage />} />
     </Routes>
   );

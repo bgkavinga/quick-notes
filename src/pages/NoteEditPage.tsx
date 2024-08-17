@@ -8,7 +8,7 @@ import { FaArrowLeft,FaTrash,FaEye } from 'react-icons/fa'
 import useNoteManager from '@/hooks/useNoteManager'
 import { Note } from '@/context/NoteContext'
 
-const NoteUpdatePage: React.FC = () => {
+const NoteEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { notes, allTags } = useNoteContext()
@@ -175,4 +175,4 @@ const NoteUpdatePage: React.FC = () => {
   )
 }
 
-export default NoteUpdatePage
+export default NoteEditPage
