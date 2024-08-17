@@ -4,13 +4,13 @@ import { FaTrash, FaEdit, FaCopy,FaEye } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
 import { Note, useNoteContext } from '@/context/NoteContext'
-import useTagManager from '@/hooks/useTagManager'
+import useSearchManager from '@/hooks/useSearchManager'
 import useNotificationManager from '@/hooks/useNotificationManager'
 
 const NoteComponent: React.FC<Note> = note => {
   const navigate = useNavigate()
   const { selectedTags } = useNoteContext()
-  const { handleTagClick } = useTagManager()
+  const { handleTagClick } = useSearchManager()
   const { setNotification } = useNotificationManager()
 
   const handleCopyNote = (content: string) => {

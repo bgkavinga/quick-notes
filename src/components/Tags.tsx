@@ -1,11 +1,11 @@
 // Tags.tsx
 import { useNoteContext } from '@/context/NoteContext'
-import useTagManager from '@/hooks/useTagManager'
+import useSearchManager from '@/hooks/useSearchManager'
 import React from 'react'
 
 const Tags: React.FC = () => {
   const { allTags, selectedTags } = useNoteContext()
-  const { handleTagClick } = useTagManager()
+  const { handleTagClick } = useSearchManager()
 
   return (
     <div className='tags-container bg-gray-100 border-b border-gray-300 mt-12'>

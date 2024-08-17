@@ -1,3 +1,7 @@
+export const NOTES_KEY = 'notes'
+export const SAVED_TAGS_KEY = 'saved_tags'
+export const CONFIG_KEY = 'configuration'
+
 const useStorageManager = () => {
     const isChromeExtension = () => {
         return typeof chrome !== 'undefined' && chrome.storage;
@@ -56,7 +60,10 @@ const useStorageManager = () => {
     return {
         setItem,
         getItem,
-        removeItem
+        removeItem,
+        NOTES_KEY,
+        SAVED_TAGS_KEY,
+        CONFIG_KEY
     }
 }
 

@@ -1,4 +1,5 @@
-import StorageUtil from '@/utils/storageUtil'
+import useStorageManager,{NOTES_KEY,SAVED_TAGS_KEY} from '@/hooks/useStorageManager'
+import useConfigManager,{CONFIG_PERSIST_STATE} from '@/hooks/useConfigManager'
 import React, {
   createContext,
   useState,
@@ -22,12 +23,14 @@ type NoteContextType = {
   notification: string | null
   selectedTags: string[]
   allTags: string[]
+  searchQuery: string
   setNotes: (note: Note[] | []) => void
   setFilteredNotes: (note: Note[] | []) => void
   setCurrentNote: (note: Note) => void
   setNotification: (notification: string | null) => void
   setSelectedTags: (tags: string[]) => void
   setAllTags: (tags: string[]) => void
+  setSearchQuery: (query: string) => void
 }
 
 export type Settings = {
@@ -43,16 +46,27 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const [filteredNotes, setFilteredNotesState] = useState<Note[]>([])
   const [currentNote, setCurrentNote] = useState<Note | null>(null)
   const [notification, setNotification] = useState<string | null>(null)
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedTags, setSelectedTagsState] = useState<string[]>([])
   const [allTags, setAllTagsState] = useState<string[]>([])
+  const [searchQuery,setSearchQuery] = useState<string>('')
+  const {setItem,getItem} = useStorageManager()
+  const {getConfig} = useConfigManager()
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const savedNotes = await StorageUtil.getItem('notes')
+        const savedNotes = await getItem(NOTES_KEY)
+        const savedTags = await getItem(SAVED_TAGS_KEY)
         const notes = savedNotes || []
         setNotes(notes)
         setFilteredNotes(notes)
+        if(savedTags.length > 0 && await getConfig(CONFIG_PERSIST_STATE)){
+          const filtered = notes.filter((note: Note) =>
+            savedTags.some((t:string) => note.tags.includes(t))
+          )
+          setFilteredNotes(filtered)
+          setSelectedTagsState(savedTags||[])
+        }
       } catch (error) {
         console.error('Error fetching notes:', error)
       }
@@ -86,6 +100,11 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
     setFilteredNotesState(sortedNotes)
   }
 
+  const setSelectedTags = async (tags:string[])=>{
+    setSelectedTagsState(tags)
+    await setItem(SAVED_TAGS_KEY,tags)
+  }
+
   return (
     <NoteContext.Provider
       value={{
@@ -94,13 +113,15 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         currentNote,
         notification,
         selectedTags,
+        allTags,
+        searchQuery,
         setNotes,
         setFilteredNotes,
         setCurrentNote,
         setNotification,
         setSelectedTags,
-        allTags,
-        setAllTags
+        setAllTags,
+        setSearchQuery
       }}
     >
       {children}

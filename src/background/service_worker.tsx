@@ -1,11 +1,13 @@
-import StorageUtil from '@/utils/storageUtil'
 import { Note } from '@/context/NoteContext'
 import truncate from '@/utils/truncate'
+import useStorageManager from '@/hooks/useStorageManager'
+
+const {getItem,NOTES_KEY} = useStorageManager()
 
 // Handle context menu item clicks
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (info.menuItemId) {
-      const notes = await StorageUtil.getItem('notes')
+      const notes = await getItem(NOTES_KEY)
       const note = notes.find((note: Note) => note.id === info.menuItemId)
       if (note) {
         chrome.scripting.executeScript({
@@ -32,7 +34,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Function to create context menu items
 const createContextMenuItems = async () => {
-    const notes = await StorageUtil.getItem('notes')
+    const notes = await getItem(NOTES_KEY)
   
     const contextMenuItems = notes.filter((note: Note) =>
       note.tags.includes('context')

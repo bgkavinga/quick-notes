@@ -1,14 +1,15 @@
 import React from 'react'
 import { useNoteContext } from '@/context/NoteContext'
 import { FaDownload, FaUpload, FaCog, FaHome } from 'react-icons/fa'
-import StorageUtil from '@/utils/storageUtil'
 import useNotificationManager from '@/hooks/useNotificationManager'
 import { useNavigate } from 'react-router-dom'
+import useStorageManager from '@/hooks/useStorageManager'
 
 const Footer: React.FC = () => {
   const { notes, setNotes, setFilteredNotes } = useNoteContext()
   const { notification, setNotification } = useNotificationManager()
   const navigate = useNavigate()
+  const {setItem} = useStorageManager()
 
   // Function to generate a timestamp string
   const generateTimestamp = () => {
@@ -47,7 +48,7 @@ const Footer: React.FC = () => {
           const importedNotes = JSON.parse(content)
           setNotes(importedNotes)
           setFilteredNotes(importedNotes)
-          StorageUtil.setItem('notes', importedNotes)
+          setItem('notes', importedNotes)
         } catch (error) {
           console.error('Error parsing JSON:', error)
         }

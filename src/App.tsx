@@ -4,10 +4,10 @@ import HomePage from '@/pages/HomePage';
 import NoteEditPage from '@/pages/NoteEditPage';
 import NoteDetailPage from '@/pages/NoteDetailPage';
 import NoteDeletePage from '@/pages/NoteDeletePage';
-import StorageUtil from '@/utils/storageUtil';
 import NoRoutePage from '@/pages/NoRoutePage';
 import SettingsPage from '@/pages/SettingsPage';
 import useConfigManager from './hooks/useConfigManager';
+import useStorageManager from './hooks/useStorageManager';
 
 
 const App: React.FC = () => {
@@ -16,12 +16,13 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const {getConfig} = useConfigManager()
+  const {setItem,getItem} = useStorageManager()
 
   // Save the current route to localStorage whenever it changes, but not on initial load
   useEffect(() => {
     if (!isInitialLoad) {
       const saveLastVisitedRoute = async () => {
-        await StorageUtil.setItem('lastVisitedRoute', location.pathname);
+        await setItem('lastVisitedRoute', location.pathname);
       };
       saveLastVisitedRoute();
     }
@@ -30,7 +31,7 @@ const App: React.FC = () => {
   // Navigate to the last visited route on initial load
   useEffect(() => {
     const loadLastVisit = async () => {
-      const lastVisitedRoute = await StorageUtil.getItem('lastVisitedRoute');
+      const lastVisitedRoute = await getItem('lastVisitedRoute');
       if (lastVisitedRoute && location.pathname === '/') {
         if(await getConfig('persistState')){
           navigate(lastVisitedRoute);

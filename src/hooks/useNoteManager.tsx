@@ -1,5 +1,5 @@
-import StorageUtil from '@/utils/storageUtil'
 import { Note, useNoteContext } from '@/context/NoteContext'
+import useStorageManager from './useStorageManager'
 
 const useNoteManager = () => {
   const {
@@ -11,6 +11,8 @@ const useNoteManager = () => {
     setNotification,
     setFilteredNotes
   } = useNoteContext()
+
+  const {setItem} = useStorageManager()
 
   const saveNote = async (newNote: Note) => {
     const { id, title, content } = newNote
@@ -35,9 +37,9 @@ const useNoteManager = () => {
     setNotes(updatedNotes)
     setFilteredNotes(newFilteredNotes)
     setAllTags(updatedTags)
-    await StorageUtil.setItem('notes', updatedNotes)
+    await setItem('notes', updatedNotes)
     if(newNote.tags.includes('context')) {
-      await StorageUtil.setItem('context_version', newNote.timestamp)
+      await setItem('context_version', newNote.timestamp)
     }
     setNotification('Note saved successfully!')
     return newNote
@@ -47,7 +49,7 @@ const useNoteManager = () => {
     const updatedNotes = notes.filter(note => note.id !== id)
     setNotes(updatedNotes)
     setFilteredNotes(updatedNotes)
-    StorageUtil.setItem('notes', updatedNotes)
+    setItem('notes', updatedNotes)
     setNotification('Note deleted successfully!')
   }
 
