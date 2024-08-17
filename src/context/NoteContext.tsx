@@ -31,7 +31,7 @@ type NoteContextType = {
 }
 
 export type Settings = {
-  persistState:boolean
+  persistState: boolean
 }
 
 export const NoteContext = createContext<NoteContextType | undefined>(undefined)
@@ -44,7 +44,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const [currentNote, setCurrentNote] = useState<Note | null>(null)
   const [notification, setNotification] = useState<string | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [allTags, setAllTags] = useState<string[]>([])
+  const [allTags, setAllTagsState] = useState<string[]>([])
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -64,18 +64,24 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const setNotes = (newNotes: Note[]) => {
     const sortedNotes = newNotes.sort(
       (a, b) =>
-        new Date(b.timestamp||'2019-07-04').getTime() - new Date(a.timestamp||'').getTime()
+        new Date(b.timestamp || '2019-07-04').getTime() - new Date(a.timestamp || '').getTime()
     )
-    setAllTags([
-      ...new Set<string>(sortedNotes.flatMap((note: Note) => note.tags))
-    ])
+    const tags = sortedNotes
+      .flatMap((note) => note.tags)  // Extract tags
+      .filter((tag, index, self) => self.indexOf(tag) === index) // Remove duplicates
+      .sort((a, b) => a.localeCompare(b)); // Sort alphabetically
+    setAllTags(tags)
     setNotesState(sortedNotes)
+  }
+
+  const setAllTags = (tags: string[]) => {
+    setAllTagsState(tags.sort((a, b) => a.localeCompare(b)))
   }
 
   const setFilteredNotes = (newNotes: Note[]) => {
     const sortedNotes = newNotes.sort(
       (a, b) =>
-        new Date(b.timestamp||'2019-07-04').getTime() - new Date(a.timestamp||'').getTime()
+        new Date(b.timestamp || '2019-07-04').getTime() - new Date(a.timestamp || '').getTime()
     )
     setFilteredNotesState(sortedNotes)
   }
