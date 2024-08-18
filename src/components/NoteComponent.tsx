@@ -27,7 +27,7 @@ const NoteComponent: React.FC<Note> = note => {
           </h1>
           <div className='flex space-x-4 p-2 ml-2'>
             <FaEdit
-              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
+              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg text-blue-500'
               onClick={() => navigate(`/note-update/${note.id}`)}
             />
             <FaEye

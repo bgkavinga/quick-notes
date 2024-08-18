@@ -3,7 +3,7 @@ import { useNoteContext } from '@/context/NoteContext'
 import { FaDownload, FaUpload, FaCog, FaHome } from 'react-icons/fa'
 import useNotificationManager from '@/hooks/useNotificationManager'
 import { useNavigate } from 'react-router-dom'
-import useStorageManager from '@/hooks/useStorageManager'
+import useStorageManager,{NOTES_KEY} from '@/hooks/useStorageManager'
 
 const Footer: React.FC = () => {
   const { notes, setNotes, setFilteredNotes } = useNoteContext()
@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
           const importedNotes = JSON.parse(content)
           setNotes(importedNotes)
           setFilteredNotes(importedNotes)
-          setItem('notes', importedNotes)
+          setItem(NOTES_KEY, importedNotes)
         } catch (error) {
           console.error('Error parsing JSON:', error)
         }

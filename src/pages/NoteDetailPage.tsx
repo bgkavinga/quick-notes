@@ -4,6 +4,7 @@ import { useNoteContext } from '@/context/NoteContext'
 import { FaEdit,FaArrowLeft } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
+import Footer from '@/components/Footer'
 
 const NoteDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -28,7 +29,7 @@ const NoteDetailPage: React.FC = () => {
           />
         )}
       </header>
-      <main className='mt-8 p-4'>
+      <main className='mt-8 mb-8 p-4'>
         {note ? (
           <div>
             <MarkdownRenderer content={note.content} />
@@ -40,6 +41,7 @@ const NoteDetailPage: React.FC = () => {
           </div>
         )}
       </main>
+      <Footer />
     </>
   )
 }
