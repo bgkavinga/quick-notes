@@ -33,10 +33,6 @@ type NoteContextType = {
   setSearchQuery: (query: string) => void
 }
 
-export type Settings = {
-  persistState: boolean
-}
-
 export const NoteContext = createContext<NoteContextType | undefined>(undefined)
 
 export const NoteProvider: React.FC<{ children: ReactNode }> = ({

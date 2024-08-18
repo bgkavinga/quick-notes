@@ -12,7 +12,7 @@ const useNoteManager = () => {
     setFilteredNotes
   } = useNoteContext()
 
-  const {setItem} = useStorageManager()
+  const { setItem } = useStorageManager()
 
   const saveNote = async (newNote: Note) => {
     const { id, title, content } = newNote
@@ -38,7 +38,7 @@ const useNoteManager = () => {
     setFilteredNotes(newFilteredNotes)
     setAllTags(updatedTags)
     await setItem('notes', updatedNotes)
-    if(newNote.tags.includes('context')) {
+    if (newNote.tags.includes('context')) {
       await setItem('context_version', newNote.timestamp)
     }
     setNotification('Note saved successfully!')

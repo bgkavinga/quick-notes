@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NoteComponent from './NoteComponent';
 import { Note } from '@/context/NoteContext';
+import useConfigManager, { CONFIG_NOTES_PER_PAGE } from '@/hooks/useConfigManager';
+import LoadingSpinner from './LoadingSpinner';
 
 
 const NotesListComponent: React.FC<{ filteredNotes: Note[] }> = ({ filteredNotes }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const notesPerPage = 10; // You can adjust this value
-    const pagesToShow = 5; // Number of pages to show at a time
+    const [loading, setLoading] = useState(true);
+    const [notesPerPage, setNotesPerPage] = useState(10)
+    const { getConfig } = useConfigManager()
 
-    // Calculate the indices of the first and last notes on the current page
+    const pagesToShow = 5;
+
     const indexOfLastNote = currentPage * notesPerPage;
     const indexOfFirstNote = indexOfLastNote - notesPerPage;
 
-    // Slice the notes array to get only the notes for the current page
     const currentNotes = filteredNotes.slice(indexOfFirstNote, indexOfLastNote);
 
     // Calculate the total number of pages
@@ -25,49 +28,71 @@ const NotesListComponent: React.FC<{ filteredNotes: Note[] }> = ({ filteredNotes
     // Handle page change
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    useEffect(() => {
+        (async () => {
+            const configNotesPerPage = await getConfig(CONFIG_NOTES_PER_PAGE);
+            // Ensure that configNotesPerPage is a number before setting the state
+            if (typeof configNotesPerPage === 'number') {
+                setNotesPerPage(configNotesPerPage);
+            } else {
+                setNotesPerPage(10); // Default value
+            }
+            setLoading(false)
+        })()
+    })
+
     return (
-        <div>
-            <ul className='space-y-2'>
-                {currentNotes.map(note => (
-                    <li key={note.id} className='note-item bg-white'>
-                        <NoteComponent {...note} />
-                    </li>
-                ))}
-            </ul>
+        <>
+            {loading ? (
+                <LoadingSpinner />
+            ) : (
 
-            <div className="flex justify-center items-center mt-4 space-x-2">
-                {/* Previous Arrow */}
-                {startPage > 1 && (
-                    <button
-                        onClick={() => paginate(currentPage - 1)}
-                        className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400"
-                    >
-                        &lt;
-                    </button>
-                )}
+                <div>
+                    <ul className='space-y-2'>
+                        {currentNotes.map(note => (
+                            <li key={note.id} className='note-item bg-white'>
+                                <NoteComponent {...note} />
+                            </li>
+                        ))}
+                    </ul>
 
-                {/* Page Numbers */}
-                {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
-                    <button
-                        key={startPage + index}
-                        onClick={() => paginate(startPage + index)}
-                        className={`px-3 py-1 rounded ${currentPage === startPage + index ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400'}`}
-                    >
-                        {startPage + index}
-                    </button>
-                ))}
+                    <div className="flex justify-center items-center mt-4 space-x-2">
+                        {/* Previous Arrow */}
+                        {startPage > 1 && (
+                            <button
+                                onClick={() => paginate(currentPage - 1)}
+                                className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400"
+                            >
+                                &lt;
+                            </button>
+                        )}
 
-                {/* Next Arrow */}
-                {endPage < totalPages && (
-                    <button
-                        onClick={() => paginate(currentPage + 1)}
-                        className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400"
-                    >
-                        &gt;
-                    </button>
-                )}
-            </div>
-        </div>
+                        {/* Page Numbers */}
+                        {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+                            <button
+                                key={startPage + index}
+                                onClick={() => paginate(startPage + index)}
+                                className={`px-3 py-1 rounded ${currentPage === startPage + index ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400'}`}
+                            >
+                                {startPage + index}
+                            </button>
+                        ))}
+
+                        {/* Next Arrow */}
+                        {endPage < totalPages && (
+                            <button
+                                onClick={() => paginate(currentPage + 1)}
+                                className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400"
+                            >
+                                &gt;
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )
+            }
+        </>
+
     );
 };
 

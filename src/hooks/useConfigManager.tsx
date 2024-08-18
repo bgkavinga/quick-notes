@@ -1,14 +1,22 @@
 import { useState } from "react"
 import useStorageManager from "./useStorageManager"
-import { Settings } from "@/context/NoteContext"
 
 export const CONFIG_PERSIST_STATE = 'persistState'
+export const CONFIG_NOTES_PER_PAGE = 'notesPerPage'
+
+
+export type Settings = {
+    persistState: boolean
+    notesPerPage: number
+  }
+  
 
 const useConfigManager = () => {
     const { getItem, setItem, CONFIG_KEY } = useStorageManager()
     const [isLoaded, setIsLoaded] = useState(false)
     const [allConfig, setAllConfig] = useState<Settings>({
-        persistState: false
+        persistState: false,
+        notesPerPage: 10
     })
     const getConfig = async (key: keyof Settings): Promise<Settings[keyof Settings] | null> => {
         const savedConfig = await getAllConfig()
@@ -34,7 +42,8 @@ const useConfigManager = () => {
     return {
         getConfig,
         setConfig,
-        getAllConfig
+        getAllConfig,
+        allConfig
     }
 }
 

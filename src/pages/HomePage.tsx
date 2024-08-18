@@ -3,7 +3,6 @@ import { useNoteContext } from '@/context/NoteContext'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Tags from '@/components/Tags'
-import NoteComponent from '@/components/NoteComponent'
 import NotesListComponent from '@/components/NotesListComponent'
 
 const HomePage: React.FC = () => {

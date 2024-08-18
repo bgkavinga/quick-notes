@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNoteContext } from '@/context/NoteContext'
-import { FaDownload, FaUpload, FaCog, FaHome } from 'react-icons/fa'
+import { FaDownload, FaUpload, FaCog, FaHome,FaTag } from 'react-icons/fa'
 import useNotificationManager from '@/hooks/useNotificationManager'
 import { useNavigate } from 'react-router-dom'
 import useStorageManager,{NOTES_KEY} from '@/hooks/useStorageManager'
@@ -69,6 +69,9 @@ const Footer: React.FC = () => {
         <div className='flex items-center ml-auto space-x-4'>
           <button onClick={() => navigate('/')}>
             <FaHome />
+          </button>
+          <button onClick={() => navigate('/tag-list')}>
+            <FaTag />
           </button>
           <input
             type='file'

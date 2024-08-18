@@ -1,6 +1,7 @@
 export const NOTES_KEY = 'notes'
 export const SAVED_TAGS_KEY = 'saved_tags'
 export const CONFIG_KEY = 'configuration'
+export const TAGS_KEY = 'tags'
 
 const useStorageManager = () => {
     const isChromeExtension = () => {

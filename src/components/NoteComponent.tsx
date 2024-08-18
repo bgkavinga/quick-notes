@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaTrash, FaEdit, FaCopy,FaEye } from 'react-icons/fa'
+import { FaTrash, FaEdit, FaCopy, FaEye } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
 import { Note, useNoteContext } from '@/context/NoteContext'
@@ -10,7 +10,7 @@ import useNotificationManager from '@/hooks/useNotificationManager'
 const NoteComponent: React.FC<Note> = note => {
   const navigate = useNavigate()
   const { selectedTags } = useNoteContext()
-  const { handleTagClick } = useSearchManager()
+  const { handleTagClick, getTagColor } = useSearchManager()
   const { setNotification } = useNotificationManager()
 
   const handleCopyNote = (content: string) => {
@@ -27,20 +27,20 @@ const NoteComponent: React.FC<Note> = note => {
           </h1>
           <div className='flex space-x-4 p-2 ml-2'>
             <FaEdit
-              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg text-blue-500'
+              className='cursor-pointer text-yellow-400 hover:text-yellow-600 transition-colors duration-300 text-lg'
               onClick={() => navigate(`/note-update/${note.id}`)}
             />
             <FaEye
-              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
+              className='cursor-pointer text-blue-400 hover:text-blue-600 transition-colors duration-300 text-lg'
               onClick={() => navigate(`/note-detail/${note.id}`)}
             />
             <FaCopy
-              className='cursor-pointer text-gray-400 hover:text-gray-600 transition-colors duration-300 text-lg'
+              className='cursor-pointer text-teal-400 hover:text-teal-600 transition-colors duration-300 text-lg'
               onClick={() => handleCopyNote(note.content)}
             />
             <FaTrash
-              className='cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg'
-              onClick={() =>  navigate(`/note-delete/${note.id}`)}
+              className='cursor-pointer text-red-500 hover:text-red-600 transition-colors duration-300 text-lg'
+              onClick={() => navigate(`/note-delete/${note.id}`)}
             />
           </div>
         </div>
@@ -53,11 +53,10 @@ const NoteComponent: React.FC<Note> = note => {
             note.tags.map(tag => (
               <li
                 key={tag}
-                className={`tag-item px-3 py-1 mt-1 cursor-pointer transition-colors duration-300 ${
-                  selectedTags.includes(tag)
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-800'
-                }`}
+                className={`tag-item px-3 py-1 mt-1 cursor-pointer transition-colors duration-300 ${selectedTags.includes(tag)
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200 text-gray-800'
+                  } ${getTagColor(tag)}`}
                 onClick={() => handleTagClick(tag)}
               >
                 #{tag}

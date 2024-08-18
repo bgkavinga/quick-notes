@@ -1,7 +1,25 @@
 import { useNoteContext } from '@/context/NoteContext'
+import useStorageManager, { TAGS_KEY } from './useStorageManager'
+import { useEffect, useState } from 'react'
+
+export type Tag = {
+    name: string
+    color: string
+}
 
 const useSearchManager = () => {
-    const { notes, selectedTags, searchQuery, setSelectedTags, setFilteredNotes } = useNoteContext()
+    const { notes, allTags, selectedTags, searchQuery, setSelectedTags, setFilteredNotes } = useNoteContext()
+    const { setItem, getItem } = useStorageManager()
+    const [savedTags, setSavedTags] = useState<Tag[] | undefined>()
+    const [isSavedTagsLoaded, setIsSavedTagsLoaded] = useState(false);
+    const [isSearchManagerLoading, setIsSearchManagerLoading] = useState(true)
+
+    useEffect(()=>{
+        (async()=>{
+            await loadSavedTags()
+            setIsSearchManagerLoading(false)
+        })()
+    },[])
 
     const handleTagClick = (tag: string) => {
         let updatedSelectedTags
@@ -35,9 +53,64 @@ const useSearchManager = () => {
         setFilteredNotes(filteredNotes);
     }
 
+    const saveTag = async (newTag: Tag) => {
+        const tags = await loadSavedTags()
+        if (tags !== undefined) {
+            const updatedTags = tags.map((tag: Tag) =>
+                tag.name === newTag.name ? { ...tag, color: newTag.color } : tag
+            )
+            const uniqueTags = Array.from(new Map(updatedTags.map(tag => [tag.name, tag])).values());
+
+            await setItem(TAGS_KEY, uniqueTags)
+            setSavedTags(updatedTags)
+        } else {
+            await setItem(TAGS_KEY, [newTag])
+            setSavedTags([newTag])
+        }
+
+    }
+
+    const loadSavedTags = async () => {
+        let tags = savedTags
+        if (!isSavedTagsLoaded) {
+            tags = await getItem(TAGS_KEY)
+            if (tags !== undefined) {
+                tags = mergeTags(tags, allTags)
+            }
+            setIsSavedTagsLoaded(true)
+            setSavedTags(tags)
+        }
+        return tags
+    }
+
+    const getTagColor = (name:string)=>{
+        const tag = savedTags?.find(tag => tag.name === name);
+        return tag?.color;
+    }
+
+    const mergeTags = (tags: Tag[], names: string[]): Tag[] => {
+        // Convert the array of tags to a Map for efficient lookup
+        const tagMap = new Map(tags.map(tag => [tag.name, tag]));
+
+        // Process the names array
+        names.forEach(name => {
+            if (!tagMap.has(name)) {
+                // If the name does not exist in the map, add it with a default color
+                tagMap.set(name, { name, color: '' }); // You can choose a default color or logic
+            }
+        });
+
+        // Convert the map back to an array
+        return Array.from(tagMap.values());
+    };
+
     return {
         handleTagClick,
-        search
+        search,
+        saveTag,
+        getTagColor,
+        savedTags,
+        isSearchManagerLoading
     }
 }
 

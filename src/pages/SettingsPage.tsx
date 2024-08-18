@@ -1,15 +1,15 @@
 import Footer from '@/components/Footer';
 import { useState, useEffect } from 'react';
-import { Settings } from '@/context/NoteContext';
+import { useNavigate } from 'react-router-dom'
 import useNotificationManager from '@/hooks/useNotificationManager';
-import useConfigManager from '@/hooks/useConfigManager';
+import useConfigManager, { Settings } from '@/hooks/useConfigManager';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const SettingsPage = () => {
     const notificationManager = useNotificationManager()
-    const [settings, setSettings] = useState<Settings>({
-        persistState: false
-    })
-    const { getAllConfig, setConfig } = useConfigManager()
+    const { getAllConfig, setConfig, allConfig } = useConfigManager()
+    const [settings, setSettings] = useState<Settings>(allConfig)
+    const navigate = useNavigate()
 
     useEffect(() => {
         (async () => {
@@ -24,8 +24,15 @@ const SettingsPage = () => {
 
     return (
         <>
-            <main className="p-6 bg-gray-100 min-h-screen">
-                <h1 className="text-2xl font-bold mb-4">Settings</h1>
+            <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
+                <div className='flex items-center'>
+                    <FaArrowLeft className='mr-2 text-xl cursor-pointer' onClick={() => navigate('/')} />
+                    <h1 className='text-xl'>
+                        Settings
+                    </h1>
+                </div>
+            </header>
+            <main className="mt-10 mb-8 p-4">
                 <div className="space-y-4">
                     <div className="flex items-center space-x-4 mb-4">
                         <label className="block text-sm font-medium text-gray-700 w-40">Persist State</label>
@@ -37,6 +44,22 @@ const SettingsPage = () => {
                                 ...settings,
                                 persistState: e.target.checked
                             })}
+                        />
+                    </div>
+                    <div className="flex items-center space-x-4 mb-4">
+                        <label className="block text-sm font-medium text-gray-700 w-40">Notes per Page</label>
+                        <input
+                            type="number"
+                            min="1"
+                            max="99"
+                            className="form-input mt-1 h-5 w-10 block border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                            value={settings.notesPerPage}
+                            onChange={(e) => {
+                                setSettings({
+                                    ...settings,
+                                    notesPerPage: parseInt(e.target.value, 10) || 10
+                                })}
+                            }
                         />
                     </div>
                 </div>
