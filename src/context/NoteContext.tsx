@@ -56,7 +56,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         const notes = savedNotes || []
         setNotes(notes)
         setFilteredNotes(notes)
-        if(savedTags.length > 0 && await getConfig(CONFIG_PERSIST_STATE)){
+        if(savedTags && savedTags.length > 0 && await getConfig(CONFIG_PERSIST_STATE)){
           const filtered = notes.filter((note: Note) =>
             savedTags.some((t:string) => note.tags.includes(t))
           )

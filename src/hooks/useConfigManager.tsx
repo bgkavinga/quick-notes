@@ -20,7 +20,8 @@ const useConfigManager = () => {
     })
     const getConfig = async (key: keyof Settings): Promise<Settings[keyof Settings] | null> => {
         const savedConfig = await getAllConfig()
-        return savedConfig[key] ?? null;
+
+        return savedConfig?savedConfig[key] ?? null:null;
     };
 
     const setConfig = async (config: Settings) => {
