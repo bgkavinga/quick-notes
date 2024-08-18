@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from 'react-icons/fa';
 import useSearchManager, { Tag } from '@/hooks/useSearchManager';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import Footer from '@/components/Footer';
 
 // Define available colors for tags
 const tagColors = [
@@ -85,8 +86,7 @@ const TagListPage: React.FC = () => {
                     )}
                 </main>
             )}
-
-
+            <Footer/>
         </>
 
     );
