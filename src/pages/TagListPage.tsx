@@ -5,6 +5,7 @@ import { FaArrowLeft } from 'react-icons/fa';
 import useSearchManager, { Tag } from '@/hooks/useSearchManager';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import Footer from '@/components/Footer';
+import { useNoteContext } from '@/context/NoteContext';
 
 // Define available colors for tags
 const tagColors = [
@@ -17,7 +18,8 @@ const tagColors = [
 
 const TagListPage: React.FC = () => {
     const navigate = useNavigate()
-    const { saveTag, savedTags, isSearchManagerLoading } = useSearchManager()
+    const {savedTags} = useNoteContext()
+    const { saveTag, isSearchManagerLoading } = useSearchManager()
 
     const [editTagName, setEditTagName] = useState<string | null>(null);
     const [editTagColor, setEditTagColor] = useState<string>(tagColors[0]);
@@ -50,7 +52,7 @@ const TagListPage: React.FC = () => {
             ) : (
                 <main className="mt-10 mb-8 p-4">
                     <ul className="space-y-2">
-                        {savedTags?.map(tag => (
+                        {savedTags?.map((tag:Tag) => (
                             <li key={tag.name} className={`flex justify-between items-center p-2 rounded shadow ${tag.color}`}>
                                 <span>{tag.name}</span>
                                 <div className="flex items-center space-x-2">

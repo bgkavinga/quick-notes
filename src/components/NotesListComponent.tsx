@@ -39,7 +39,7 @@ const NotesListComponent: React.FC<{ filteredNotes: Note[] }> = ({ filteredNotes
             }
             setLoading(false)
         })()
-    })
+    },[])
 
     return (
         <>

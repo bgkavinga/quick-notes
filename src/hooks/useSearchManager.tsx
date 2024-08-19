@@ -8,10 +8,8 @@ export type Tag = {
 }
 
 const useSearchManager = () => {
-    const { notes, allTags, selectedTags, searchQuery, setSelectedTags, setFilteredNotes } = useNoteContext()
+    const { notes, allTags, selectedTags, searchQuery, setSelectedTags, setFilteredNotes,savedTags, setSavedTags } = useNoteContext()
     const { setItem, getItem } = useStorageManager()
-    const [savedTags, setSavedTags] = useState<Tag[] | undefined>()
-    const [isSavedTagsLoaded, setIsSavedTagsLoaded] = useState(false);
     const [isSearchManagerLoading, setIsSearchManagerLoading] = useState(true)
 
     useEffect(()=>{
@@ -54,7 +52,7 @@ const useSearchManager = () => {
     }
 
     const saveTag = async (newTag: Tag) => {
-        const tags = await loadSavedTags()
+        const tags = savedTags
         if (tags !== undefined) {
             const updatedTags = tags.map((tag: Tag) =>
                 tag.name === newTag.name ? { ...tag, color: newTag.color } : tag
@@ -71,15 +69,11 @@ const useSearchManager = () => {
     }
 
     const loadSavedTags = async () => {
-        let tags = savedTags
-        if (!isSavedTagsLoaded) {
-            tags = await getItem(TAGS_KEY)
-            if (tags !== undefined) {
-                tags = mergeTags(tags, allTags)
-            }
-            setIsSavedTagsLoaded(true)
-            setSavedTags(tags)
-        }
+        let tags = await getItem(TAGS_KEY)
+        tags = tags || []
+        tags = mergeTags(tags, allTags)
+        setSavedTags(tags)
+        console.log('loadSavedTags',tags)
         return tags
     }
 
@@ -109,7 +103,6 @@ const useSearchManager = () => {
         search,
         saveTag,
         getTagColor,
-        savedTags,
         isSearchManagerLoading
     }
 }

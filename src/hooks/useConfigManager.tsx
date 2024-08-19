@@ -19,7 +19,7 @@ const useConfigManager = () => {
   const getConfig = (
     key: keyof Settings
   ): (Settings[keyof Settings] | null) => {
-
+    console.log('allConfig',allConfig)
     return allConfig ? allConfig[key] ?? null : null
   }
 
@@ -34,8 +34,9 @@ const useConfigManager = () => {
       const savedConfig = await getItem(CONFIG_KEY)
       setAllConfig(savedConfig)
       setIsConfigLoading(false)
+      console.log('config')
     })()
-  },  [getItem, CONFIG_KEY])
+  },  [])
 
   return {
     getConfig,

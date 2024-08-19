@@ -1,5 +1,10 @@
-import useStorageManager,{NOTES_KEY,SAVED_TAGS_KEY} from '@/hooks/useStorageManager'
-import useConfigManager,{CONFIG_PERSIST_STATE} from '@/hooks/useConfigManager'
+import useStorageManager, {
+  NOTES_KEY,
+  SAVED_TAGS_KEY
+} from '@/hooks/useStorageManager'
+import useConfigManager, {
+  CONFIG_PERSIST_STATE
+} from '@/hooks/useConfigManager'
 import React, {
   createContext,
   useState,
@@ -7,6 +12,8 @@ import React, {
   ReactNode,
   useContext
 } from 'react'
+import { Tag } from '@/hooks/useSearchManager'
+import LoadingSpinner from '@/components/LoadingSpinner'
 
 export type Note = {
   id?: string
@@ -24,6 +31,8 @@ type NoteContextType = {
   selectedTags: string[]
   allTags: string[]
   searchQuery: string
+  savedTags: Tag[]
+  isContextLoading: boolean
   setNotes: (note: Note[] | []) => void
   setFilteredNotes: (note: Note[] | []) => void
   setCurrentNote: (note: Note) => void
@@ -31,6 +40,7 @@ type NoteContextType = {
   setSelectedTags: (tags: string[]) => void
   setAllTags: (tags: string[]) => void
   setSearchQuery: (query: string) => void
+  setSavedTags: (tags: Tag[]) => void
 }
 
 export const NoteContext = createContext<NoteContextType | undefined>(undefined)
@@ -44,9 +54,11 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const [notification, setNotification] = useState<string | null>(null)
   const [selectedTags, setSelectedTagsState] = useState<string[]>([])
   const [allTags, setAllTagsState] = useState<string[]>([])
-  const [searchQuery,setSearchQuery] = useState<string>('')
-  const {setItem,getItem} = useStorageManager()
-  const {getConfig} = useConfigManager()
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [savedTags, setSavedTags] = useState<Tag[]>([])
+  const { setItem, getItem } = useStorageManager()
+  const { getConfig,isConfigLoading } = useConfigManager()
+  const [isContextLoading, setIsContextLoading] = useState(true)
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -56,13 +68,19 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         const notes = savedNotes || []
         setNotes(notes)
         setFilteredNotes(notes)
-        if(savedTags && savedTags.length > 0 && await getConfig(CONFIG_PERSIST_STATE)){
+        console.log('context')
+        if (
+          savedTags &&
+          savedTags.length > 0 &&
+          (await getConfig(CONFIG_PERSIST_STATE))
+        ) {
           const filtered = notes.filter((note: Note) =>
-            savedTags.some((t:string) => note.tags.includes(t))
+            savedTags.some((t: string) => note.tags.includes(t))
           )
           setFilteredNotes(filtered)
-          setSelectedTagsState(savedTags||[])
+          setSelectedTagsState(savedTags || [])
         }
+        setIsContextLoading(false)
       } catch (error) {
         console.error('Error fetching notes:', error)
       }
@@ -71,15 +89,17 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
     fetchNotes()
   }, [])
 
+
   const setNotes = (newNotes: Note[]) => {
     const sortedNotes = newNotes.sort(
       (a, b) =>
-        new Date(b.timestamp || '2019-07-04').getTime() - new Date(a.timestamp || '').getTime()
+        new Date(b.timestamp || '2019-07-04').getTime() -
+        new Date(a.timestamp || '').getTime()
     )
     const tags = sortedNotes
-      .flatMap((note) => note.tags)  // Extract tags
+      .flatMap(note => note.tags) // Extract tags
       .filter((tag, index, self) => self.indexOf(tag) === index) // Remove duplicates
-      .sort((a, b) => a.localeCompare(b)); // Sort alphabetically
+      .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
     setAllTags(tags)
     setNotesState(sortedNotes)
   }
@@ -91,16 +111,21 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const setFilteredNotes = (newNotes: Note[]) => {
     const sortedNotes = newNotes.sort(
       (a, b) =>
-        new Date(b.timestamp || '2019-07-04').getTime() - new Date(a.timestamp || '').getTime()
+        new Date(b.timestamp || '2019-07-04').getTime() -
+        new Date(a.timestamp || '').getTime()
     )
     setFilteredNotesState(sortedNotes)
   }
 
-  const setSelectedTags = async (tags:string[])=>{
+  const setSelectedTags = async (tags: string[]) => {
     setSelectedTagsState(tags)
-    await setItem(SAVED_TAGS_KEY,tags)
+    await setItem(SAVED_TAGS_KEY, tags)
   }
 
+  if (isContextLoading || isConfigLoading) {
+    return <LoadingSpinner />
+  }
+  
   return (
     <NoteContext.Provider
       value={{
@@ -111,13 +136,16 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         selectedTags,
         allTags,
         searchQuery,
+        savedTags,
         setNotes,
         setFilteredNotes,
         setCurrentNote,
         setNotification,
         setSelectedTags,
         setAllTags,
-        setSearchQuery
+        setSearchQuery,
+        setSavedTags,
+        isContextLoading
       }}
     >
       {children}
