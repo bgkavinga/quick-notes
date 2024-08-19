@@ -35,6 +35,10 @@ chrome.runtime.onInstalled.addListener(() => {
 // Function to create context menu items
 const createContextMenuItems = async () => {
     const notes = await getItem(NOTES_KEY)
+
+    if(!notes){
+      return
+    }
   
     const contextMenuItems = notes.filter((note: Note) =>
       note.tags.includes('context')
