@@ -28,7 +28,7 @@ function randomTags() {
 // Generate random timestamp
 function randomTimestamp() {
   const start = new Date(2023, 0, 1); // January 1, 2023
-  const end = new Date(2024, 11, 31); // December 31, 2024
+  const end = new Date(2024, 8, 19); // December 31, 2024
   const timestamp = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   return timestamp.toISOString();
 }
@@ -50,7 +50,7 @@ function generateTestData(num) {
 }
 
 // Generate 1000 test data entries
-const testData = generateTestData(1000);
+const testData = generateTestData(10000);
 
 // Save the data to a file
 const filePath = path.join(__dirname, 'test_data_1000.json');

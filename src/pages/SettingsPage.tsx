@@ -8,20 +8,22 @@ import LoadingSpinner from '@/components/LoadingSpinner'
 
 const SettingsPage = () => {
   const notificationManager = useNotificationManager()
-  const { isConfigLoading, setConfig, allConfig } = useConfigManager()
+  const { getAllConfig, setConfig } = useConfigManager()
   const [settings, setSettings] = useState<Settings>({
     persistState: false,
     notesPerPage: 10
   })
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(allConfig){
-        setSettings(allConfig)
-    }
-  }, [isConfigLoading])
+    (async () => {  
+      setSettings(await getAllConfig())
+      setIsLoading(false)
+    })()
+  }, [])
 
-  if (isConfigLoading) {
+  if (isLoading) {
     return <LoadingSpinner />
   }
 

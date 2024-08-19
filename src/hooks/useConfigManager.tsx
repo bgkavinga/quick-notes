@@ -25,23 +25,33 @@ const useConfigManager = () => {
   }
 
   const setConfig = async (config: Settings) => {
-    loadConfig()
+    await loadConfig()
     setAllConfig(config)
     await setItem(CONFIG_KEY, config)
+  }
+
+  const getAllConfig = async ():Promise<Settings> => {
+    return await loadConfig()
   }
 
   const loadConfig = async ():Promise<Settings> => {
     if (!isConfigLoading) {
       return allConfig
     }
-    const config = await getItem(CONFIG_KEY)
-    setAllConfig(config)
+    let config = await getItem(CONFIG_KEY)
+    if(config){
+      setAllConfig(config)
+    }else{
+      config = allConfig
+    }
+    
     setIsConfigLoading(false)
     return config
   }
 
   return {
     getConfig,
+    getAllConfig,
     setAllConfig,
     setConfig,
     isConfigLoading,
