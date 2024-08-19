@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 
 const Tags: React.FC = () => {
   const { allTags, selectedTags,savedTags } = useNoteContext()
-  const { handleTagClick, isSearchManagerLoading } = useSearchManager()
+  const { handleTagClick, isSearchManagerLoading, generateTagStyles } = useSearchManager()
   const [localTags, setLocalTags] = React.useState(savedTags)
 
   useEffect(() => {
@@ -26,11 +26,11 @@ const Tags: React.FC = () => {
             {localTags?.map(tag => (
               <li
                 key={tag.name}
-                className={`tag-item px-3 py-1 mt-1 cursor-pointer transition-colors duration-300 ${
+                className={`tag-item px-3 py-1 mt-1 cursor-pointer transition-colors text-gray-800 duration-300 ${
                   selectedTags.includes(tag.name)
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-800'
-                } ${tag.color}`}
+                    ? generateTagStyles(tag, true)
+                    : generateTagStyles(tag, false)
+                } `}
                 onClick={() => handleTagClick(tag.name)}
               >
                 #{tag.name}

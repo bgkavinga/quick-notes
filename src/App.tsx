@@ -23,15 +23,11 @@ const App: React.FC = () => {
       const lastVisitedRoute = await getItem('lastVisitedRoute')
       if (lastVisitedRoute && location.pathname === '/') {
         const persistState = await getConfig('persistState')
-        console.log('Navigating to last visited route:', lastVisitedRoute,persistState)
         if (persistState) {
           navigate(lastVisitedRoute)
         }
       }
       setIsInitialLoad(false)
-    }
-    if (isConfigLoading) {
-      return
     }
     loadLastVisit()
   }, [isConfigLoading])

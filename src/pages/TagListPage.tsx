@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { FaArrowLeft } from 'react-icons/fa';
 import useSearchManager, { Tag } from '@/hooks/useSearchManager';
-import LoadingSpinner from '@/components/LoadingSpinner';
 import Footer from '@/components/Footer';
 import { useNoteContext } from '@/context/NoteContext';
 
@@ -19,11 +18,10 @@ const tagColors = [
 const TagListPage: React.FC = () => {
     const navigate = useNavigate()
     const {savedTags} = useNoteContext()
-    const { saveTag, isSearchManagerLoading } = useSearchManager()
+    const { saveTag } = useSearchManager()
 
     const [editTagName, setEditTagName] = useState<string | null>(null);
     const [editTagColor, setEditTagColor] = useState<string>(tagColors[0]);
-
 
     const handleEditTag = (tag: Tag) => {
         setEditTagName(tag.name);
@@ -35,10 +33,6 @@ const TagListPage: React.FC = () => {
         setEditTagName(null);
         setEditTagColor(tagColors[0]);
     };
-
-    if(isSearchManagerLoading) {
-        return <LoadingSpinner />
-    }
 
     return (
         <>

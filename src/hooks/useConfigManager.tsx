@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 import useStorageManager from './useStorageManager'
 
 export const CONFIG_PERSIST_STATE = 'persistState'
@@ -16,27 +16,29 @@ const useConfigManager = () => {
     persistState: false,
     notesPerPage: 10
   })
-  const getConfig = (
+
+  const getConfig = async(
     key: keyof Settings
-  ): (Settings[keyof Settings] | null) => {
-    console.log('allConfig',allConfig)
-    return allConfig ? allConfig[key] ?? null : null
+  ): Promise<Settings[keyof Settings] | null> => {
+    const config = await loadConfig()
+    return config ? config[key] ?? null : null
   }
 
   const setConfig = async (config: Settings) => {
+    loadConfig()
     setAllConfig(config)
     await setItem(CONFIG_KEY, config)
   }
 
-
-  useEffect(() => {
-    (async () => {
-      const savedConfig = await getItem(CONFIG_KEY)
-      setAllConfig(savedConfig)
-      setIsConfigLoading(false)
-      console.log('config')
-    })()
-  },  [])
+  const loadConfig = async ():Promise<Settings> => {
+    if (!isConfigLoading) {
+      return allConfig
+    }
+    const config = await getItem(CONFIG_KEY)
+    setAllConfig(config)
+    setIsConfigLoading(false)
+    return config
+  }
 
   return {
     getConfig,

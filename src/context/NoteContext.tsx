@@ -65,14 +65,15 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
       try {
         const savedNotes = await getItem(NOTES_KEY)
         const savedTags = await getItem(SAVED_TAGS_KEY)
+        const persistState = await getConfig(CONFIG_PERSIST_STATE)
         const notes = savedNotes || []
         setNotes(notes)
         setFilteredNotes(notes)
-        console.log('context')
+        console.log('savedTags',savedTags,persistState)
         if (
           savedTags &&
           savedTags.length > 0 &&
-          (await getConfig(CONFIG_PERSIST_STATE))
+          persistState
         ) {
           const filtered = notes.filter((note: Note) =>
             savedTags.some((t: string) => note.tags.includes(t))
