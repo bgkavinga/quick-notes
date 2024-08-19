@@ -11,7 +11,7 @@ import { useNoteContext } from '@/context/NoteContext';
 const tagColors = [
     'bg-red-500',
     'bg-green-500',
-    'bg-blue-500',
+    'bg-cyan-500',
     'bg-yellow-500',
     'bg-purple-500'
 ];
@@ -36,6 +36,10 @@ const TagListPage: React.FC = () => {
         setEditTagColor(tagColors[0]);
     };
 
+    if(isSearchManagerLoading) {
+        return <LoadingSpinner />
+    }
+
     return (
         <>
             <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
@@ -47,10 +51,7 @@ const TagListPage: React.FC = () => {
                 </div>
             </header>
 
-            {isSearchManagerLoading ? (
-                <LoadingSpinner />
-            ) : (
-                <main className="mt-10 mb-8 p-4">
+            <main className="mt-10 mb-8 p-4">
                     <ul className="space-y-2">
                         {savedTags?.map((tag:Tag) => (
                             <li key={tag.name} className={`flex justify-between items-center p-2 rounded shadow ${tag.color}`}>
@@ -87,7 +88,6 @@ const TagListPage: React.FC = () => {
                         </div>
                     )}
                 </main>
-            )}
             <Footer/>
         </>
 
