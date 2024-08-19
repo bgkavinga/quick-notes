@@ -20,6 +20,11 @@ const NoteEditPage: React.FC = () => {
   const [content, setContent] = useState(note?.content || '')
   const [tags, setTags] = useState<string[]>(note?.tags || [])
   const [newTag, setNewTag] = useState('')
+  const [isLoading, setIsLoading] = useState(true) // avoid saving note before loading
+
+  useEffect(() => {
+    setIsLoading(false)
+  },[])
 
   useEffect(() => {
     if (note) {
@@ -28,6 +33,24 @@ const NoteEditPage: React.FC = () => {
       setTags(note.tags ? note.tags : [])
     }
   }, [note])
+
+  useEffect(() => {
+    if (isLoading) {
+      return
+    }
+    const saveActionWrapper = async () => {
+      const newNote = {
+        id: note?.id ? String(id) : undefined,
+        title,
+        content,
+        tags
+      }
+      return await saveNote(newNote)
+    }
+    saveActionWrapper().then((note?: Note) => {
+      note ? navigate(`/note-update/${note.id}`) : ''
+    })
+  }, [title, content, tags])
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && newTag.trim() && !tags.includes(newTag.trim())) {
@@ -47,21 +70,6 @@ const NoteEditPage: React.FC = () => {
   const handleEditorChange = ({ text }: { text: string }) => {
     setContent(text)
   }
-
-  useEffect(() => {
-    const saveActionWrapper = async () => {
-      const newNote = {
-        id: note?.id ? String(id) : undefined,
-        title,
-        content,
-        tags
-      }
-      return await saveNote(newNote)
-    }
-    saveActionWrapper().then((note?: Note) => {
-      note ? navigate(`/note-update/${note.id}`) : ''
-    })
-  }, [title, content, tags])
 
   return (
     <>
