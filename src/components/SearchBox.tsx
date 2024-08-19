@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useRef,useEffect} from 'react';
 import { FaSearch } from 'react-icons/fa'; // Import the search icon
 import { useNoteContext } from '@/context/NoteContext';
 import useSearchManager from '@/hooks/useSearchManager';
@@ -7,16 +7,24 @@ import useSearchManager from '@/hooks/useSearchManager';
 const SearchBox: React.FC = () => {
   const { searchQuery,setSearchQuery } = useNoteContext();
   const {search} = useSearchManager()
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
     search(e.target.value)
   };
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <div className="flex items-center space-x-2 w-full">
       <FaSearch className="text-xl text-gray-400" />
       <input
+        ref={inputRef}
         type="text"
         value={searchQuery}
         onChange={handleInputChange}
