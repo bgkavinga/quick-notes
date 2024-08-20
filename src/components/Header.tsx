@@ -23,7 +23,7 @@ const Header: React.FC = () => {
     )
     if (filtered.length > 0) {
       const firstFilteredNote = filtered[0]
-      navigate(`/note-detail/${firstFilteredNote.id}`)
+      navigate(`/note-update/${firstFilteredNote.id}`)
     } else {
       const contentHtml = `[${title}](${url})`
       const newNote = {
@@ -31,8 +31,8 @@ const Header: React.FC = () => {
         content: contentHtml || '',
         tags: []
       }
-      saveNote(newNote)
-      navigate('/')
+      const savedNote = await saveNote(newNote)
+      navigate(`/note-update/${savedNote?.id}`)
     }
   }
 
