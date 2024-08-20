@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+    height: max(600px,100vh)!important;
+    overflow: hidden;
+    width: max(800px,100vw)!important
+}
+
 @layer base {
     button {
         @apply flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded;

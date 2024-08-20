@@ -12,13 +12,13 @@ const HomePage: React.FC = () => {
     <>
       <Header />
       <Tags/>
-      <main className='mb-12'>
+      <div className='mb-12'>
         {filteredNotes.length === 0 ? (
           <p className='text-gray-600 text-lg'>No notes available</p>
         ) : (
           <NotesListComponent filteredNotes={filteredNotes} />
         )}
-      </main>
+      </div>
       <Footer />
     </>
   )
