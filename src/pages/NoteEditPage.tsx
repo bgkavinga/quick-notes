@@ -12,7 +12,7 @@ import useSearchManager, { Tag } from '@/hooks/useSearchManager'
 const NoteEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { notes, allTags } = useNoteContext()
+  const { notes } = useNoteContext()
   const { saveNote } = useNoteManager()
   const { getAllSavedTags } = useSearchManager()
   const [ allSavedTagsState, setAllSavedTagsState ] = useState<Tag[]>()

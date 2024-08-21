@@ -1,21 +1,28 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaTrash, FaEdit, FaCopy, FaEye } from 'react-icons/fa'
+import { FaTrash, FaEdit, FaCopy, FaEye, FaTimes } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
 import { Note, useNoteContext } from '@/context/NoteContext'
 import useSearchManager from '@/hooks/useSearchManager'
 import useNotificationManager from '@/hooks/useNotificationManager'
+import useNoteManager from '@/hooks/useNoteManager'
 
 const NoteComponent: React.FC<Note> = note => {
   const navigate = useNavigate()
   const { selectedTags } = useNoteContext()
   const { handleTagClick, generateTagStyles } = useSearchManager()
   const { setNotification } = useNotificationManager()
+  const { saveNote } = useNoteManager()
 
   const handleCopyNote = (content: string) => {
     navigator.clipboard.writeText(content)
     setNotification('content copied to the clipboard')
+  }
+
+  const handleRemoveTag = (tagName: string) => {
+    saveNote({ ...note, tags: note.tags.filter(tag => tag !== tagName) })
+    setNotification(`Tag "${tagName}" removed successfully!`)
   }
 
   return (
@@ -58,9 +65,16 @@ const NoteComponent: React.FC<Note> = note => {
                     ? generateTagStyles({ name: tag }, true)
                     : generateTagStyles({ name: tag }, false)
                 }`}
-                onClick={() => handleTagClick(tag)}
               >
-                #{tag}
+                <span className='inline-flex items-center text-sm font-medium'
+                key={tag}
+                >
+                <a onClick={() => handleTagClick(tag)}>  {tag} </a> 
+                <FaTimes
+                    className='ml-2 cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300'
+                    onClick={() => handleRemoveTag(tag)}
+                  />
+                </span>
               </li>
             ))}
         </ul>
