@@ -23,7 +23,7 @@ const NoteComponent: React.FC<Note> = note => {
       <div className='relative group'>
         <div className='flex items-center bg-slate-200 text-gray-800 justify-between'>
           <h1 className='text-lg font-bold p-2 cursor-pointer flex-grow'>
-            {note.title ? truncate(note.title || '', 50) : 'Untitled'}
+            {note.title ? truncate(note.title || '', 40) : 'Untitled'}
           </h1>
           <div className='flex space-x-4 p-2 ml-2'>
             <FaEdit

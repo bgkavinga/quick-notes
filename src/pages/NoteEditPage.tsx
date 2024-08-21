@@ -7,12 +7,15 @@ import ReactMarkdown from 'react-markdown'
 import { FaArrowLeft,FaTrash,FaEye } from 'react-icons/fa'
 import useNoteManager from '@/hooks/useNoteManager'
 import { Note } from '@/context/NoteContext'
+import useSearchManager, { Tag } from '@/hooks/useSearchManager'
 
 const NoteEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { notes, allTags } = useNoteContext()
   const { saveNote } = useNoteManager()
+  const { getAllSavedTags } = useSearchManager()
+  const [ allSavedTagsState, setAllSavedTagsState ] = useState<Tag[]>()
 
   const note = notes.find(note => note.id === id)
 
@@ -23,7 +26,11 @@ const NoteEditPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true) // avoid saving note before loading
 
   useEffect(() => {
-    setIsLoading(false)
+    (async()=>{
+      const allSavedTags = await getAllSavedTags()
+      setAllSavedTagsState(allSavedTags)
+      setIsLoading(false)
+    })()
   },[])
 
   useEffect(() => {
@@ -133,15 +140,15 @@ const NoteEditPage: React.FC = () => {
         <div className='mb-4'>
           <h2 className='text-l font-bold mb-2'>Tags</h2>
           <div className='flex flex-wrap mb-4'>
-            {allTags.map((tag, index) => (
+            {allSavedTagsState?.map((tag:Tag, index) => (
               <span
                 key={index}
                 className={`inline-block rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer ${
-                  tags.includes(tag) ? 'bg-blue-200' : 'bg-gray-200'
+                  tags.includes(tag.name) ? 'bg-blue-200' : 'bg-gray-200'
                 }`}
-                onClick={() => handleToggleTag(tag)}
+                onClick={() => handleToggleTag(tag.name)}
               >
-                {tag}
+                {tag.name}
               </span>
             ))}
           </div>

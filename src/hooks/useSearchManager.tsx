@@ -122,6 +122,10 @@ const useSearchManager = () => {
     return tag.color ? tag.color : 'bg-gray-200 text-gray-800'
   }
 
+  const getAllSavedTags = async () =>{
+    return await loadSavedTags()    
+  }
+
   return {
     handleTagClick,
     search,
@@ -129,6 +133,7 @@ const useSearchManager = () => {
     getTagColor,
     generateTagStyles,
     getTag,
+    getAllSavedTags,
     isSearchManagerLoading
   }
 }
