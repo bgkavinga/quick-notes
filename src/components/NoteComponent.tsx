@@ -53,7 +53,7 @@ const NoteComponent: React.FC<Note> = note => {
             note.tags.map(tag => (
               <li
                 key={tag}
-                className={`tag-item px-3 py-1 mt-1 cursor-pointer transition-colors duration-300 ${
+                className={`text-sm tag-item px-3 py-1 mt-1 cursor-pointer transition-colors duration-300 ${
                   selectedTags.includes(tag)
                     ? generateTagStyles({ name: tag }, true)
                     : generateTagStyles({ name: tag }, false)

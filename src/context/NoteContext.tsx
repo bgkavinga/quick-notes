@@ -61,6 +61,16 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const [isContextLoading, setIsContextLoading] = useState(true)
 
   useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification('')
+      }, 3000) // Hide notification after 3 seconds
+
+      return () =>{ clearTimeout(timer) } // Cleanup the timer on component unmount
+    }
+  }, [notification])
+
+  useEffect(() => {
     const fetchNotes = async () => {
       try {
         const savedNotes = await getItem(NOTES_KEY)

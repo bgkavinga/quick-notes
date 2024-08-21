@@ -4,7 +4,6 @@ import { useNoteContext } from '@/context/NoteContext'
 import { FaEdit,FaArrowLeft } from 'react-icons/fa'
 import MarkdownRenderer from '@/components/MarkdownRenderer'
 import truncate from '@/utils/truncate'
-import Footer from '@/components/Footer'
 
 const NoteDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -15,7 +14,7 @@ const NoteDetailPage: React.FC = () => {
 
   return (
     <>
-     <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
+     <header className='top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
         <div className='flex items-center'>
           <FaArrowLeft className='mr-2 text-xl cursor-pointer' onClick={() => navigate('/')}/>
           <h1 className='text-xl'>
@@ -29,7 +28,7 @@ const NoteDetailPage: React.FC = () => {
           />
         )}
       </header>
-      <main className='mt-8 mb-8 p-4'>
+      <main className='p-4 scrollable-content'>
         {note ? (
           <div>
             <MarkdownRenderer content={note.content} />
@@ -41,7 +40,6 @@ const NoteDetailPage: React.FC = () => {
           </div>
         )}
       </main>
-      <Footer />
     </>
   )
 }

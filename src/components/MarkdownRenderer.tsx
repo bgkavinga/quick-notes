@@ -42,7 +42,7 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
           <code>{code}</code>
           <button
             onClick={() => handleCopy(code)}
-            className='copy-button absolute right-2 px-2 text-white rounded cursor-pointer transition-colors duration-300 hover:bg-gray-700'
+            className='copy-button absolute right-2 top-2 bottom-2 px-2 text-white rounded cursor-pointer transition-colors duration-300 hover:bg-gray-700 flex items-center justify-center'
           >
             <FaCopy className='inline-block' />
           </button>

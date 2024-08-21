@@ -9,6 +9,8 @@ import TagListPage from './pages/TagListPage'
 import SettingsPage from '@/pages/SettingsPage'
 import useConfigManager from './hooks/useConfigManager'
 import useStorageManager from './hooks/useStorageManager'
+import Layout from './pages/Layout'
+import TagEditPage from './pages/TagEditPage'
 
 const App: React.FC = () => {
   const location = useLocation()
@@ -44,13 +46,16 @@ const App: React.FC = () => {
 
   return (
     <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/note-update/:id?' element={<NoteEditPage />} />
-      <Route path='/note-detail/:id?' element={<NoteDetailPage />} />
-      <Route path='/note-delete/:id' element={<NoteDeletePage />} />
-      <Route path='/settings' element={<SettingsPage />} />
-      <Route path='/tag-list' element={<TagListPage />} />
-      <Route path='*' element={<NoRoutePage />} />
+      <Route path='/' element={<Layout />} >
+        <Route index element={<HomePage />} />
+        <Route path='/note-update/:id?' element={<NoteEditPage />} />
+        <Route path='/note-detail/:id?' element={<NoteDetailPage />} />
+        <Route path='/note-delete/:id' element={<NoteDeletePage />} />
+        <Route path='/settings' element={<SettingsPage />} />
+        <Route path='/tag-list' element={<TagListPage />} />
+        <Route path='/tag-edit/:tagName' element={<TagEditPage />} />
+        <Route path='*' element={<NoRoutePage />} />
+      </Route>
     </Routes>
   )
 }

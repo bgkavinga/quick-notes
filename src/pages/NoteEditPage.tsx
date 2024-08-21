@@ -73,7 +73,7 @@ const NoteEditPage: React.FC = () => {
 
   return (
     <>
-      <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
+      <header className='top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
         <div className='flex items-center'>
           <FaArrowLeft
             className='mr-2 cursor-pointer text-xl'
@@ -93,7 +93,7 @@ const NoteEditPage: React.FC = () => {
         </div>
       </header>
 
-      <div className='container mx-auto p-4 mt-12'>
+      <div className='mx-auto p-4 scrollable-content'>
         <div className='mb-4'>
           <label
             htmlFor='noteTitle'

@@ -19,14 +19,14 @@ const Tags: React.FC = () => {
   }
 
   return (
-    <div className='tags-container bg-gray-100 border-b border-gray-300 mt-12'>
+    <div className='tags-container bg-gray-100 border-b border-gray-300'>
       {allTags.length > 0 && (
         <div className='tags-list p-2'>
           <ul className='flex flex-wrap space-x-2'>
             {localTags?.map(tag => (
               <li
                 key={tag.name}
-                className={`tag-item px-3 py-1 mt-1 cursor-pointer transition-colors text-gray-800 duration-300 ${
+                className={`tag-item text-sm px-3 py-1 mt-1 cursor-pointer transition-colors text-gray-800 duration-300 ${
                   selectedTags.includes(tag.name)
                     ? generateTagStyles(tag, true)
                     : generateTagStyles(tag, false)

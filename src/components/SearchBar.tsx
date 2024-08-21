@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useNoteContext } from '@/context/NoteContext'
 import useNoteManager from '@/hooks/useNoteManager'
 
-const Header: React.FC = () => {
+const SearchBar: React.FC = () => {
   const navigate = useNavigate()
   const { notes } = useNoteContext()
   const onAddClick = useCallback(() => {
@@ -37,7 +37,7 @@ const Header: React.FC = () => {
   }
 
   return (
-    <header className='fixed top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 space-x-4 shadow-md flex items-center z-50'>
+    <header className='top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 space-x-4 shadow-md flex items-center z-50'>
       <div className='flex-grow'>
         <SearchBox />
       </div>
@@ -57,4 +57,4 @@ const Header: React.FC = () => {
   )
 }
 
-export default Header
+export default SearchBar

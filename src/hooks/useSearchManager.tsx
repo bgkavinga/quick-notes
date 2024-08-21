@@ -79,6 +79,12 @@ const useSearchManager = () => {
     }
   }
 
+  const getTag = async (name?: string) => {
+    let tags = await loadSavedTags()
+    const tag = tags.find((tag:Tag) => tag.name === name)
+    return tag
+  }
+
   const loadSavedTags = async () => {
     let tags = await getItem(TAGS_KEY)
     tags = tags || []
@@ -122,6 +128,7 @@ const useSearchManager = () => {
     saveTag,
     getTagColor,
     generateTagStyles,
+    getTag,
     isSearchManagerLoading
   }
 }
