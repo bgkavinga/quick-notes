@@ -12,6 +12,7 @@ const SearchBar: React.FC = () => {
     navigate(`/note-update`)
   }, [])
   const { saveNote } = useNoteManager()
+  const excludeTags = ['context']
 
   const onAddLinkClick = async () => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
@@ -39,7 +40,7 @@ const SearchBar: React.FC = () => {
   return (
     <header className='top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 space-x-4 shadow-md flex items-center z-50'>
       <div className='flex-grow'>
-        <SearchBox />
+        <SearchBox excludeTags={excludeTags} />
       </div>
       <button
         onClick={onAddClick}

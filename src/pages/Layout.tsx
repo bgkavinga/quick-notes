@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { FaHome, FaTags, FaCog } from 'react-icons/fa'
+import { FaHome, FaTags, FaCog,FaBuffer } from 'react-icons/fa'
 import Notification from '@/components/Notification'
 
 
@@ -41,6 +41,17 @@ const Layout: React.FC<LayoutProps> = () => {
               >
                 <FaTags className='mr-2' />
                 Tags
+              </Link>
+            </li>
+            <li>
+              <Link
+                to='/context-menu'
+                className={`flex items-center py-2 px-3 rounded-md transition-colors duration-200 ${
+                  isActive('/context-menu') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                }`}
+              >
+                <FaBuffer className='mr-2' />
+                Context Menus
               </Link>
             </li>
             <li>

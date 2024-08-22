@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 export type Tag = {
   name: string
   color?: string
+  hideFromSearch?: boolean
 }
 
 const useSearchManager = () => {
@@ -16,7 +17,7 @@ const useSearchManager = () => {
     setSelectedTags,
     setFilteredNotes,
     savedTags,
-    setSavedTags
+    setSavedTags,
   } = useNoteContext()
   const { setItem, getItem } = useStorageManager()
   const [isSearchManagerLoading, setIsSearchManagerLoading] = useState(true)
@@ -39,25 +40,31 @@ const useSearchManager = () => {
     search(searchQuery, updatedSelectedTags)
   }
 
-  const search = (query: string, tags?: string[]) => {
+  const search = (query: string, tags?: string[], excludeTags?: string[]) => {
     const queryLower = query.toLowerCase()
-    let filteredNotes = notes.filter(
-      note =>
-        note.title.toLowerCase().includes(queryLower) ||
-        note.content.toLowerCase().includes(queryLower) ||
-        note.tags.some(tag => tag.toLowerCase().includes(queryLower))
-    )
-    if (tags) {
-      if (tags.length > 0) {
-        filteredNotes = filteredNotes.filter(note =>
-          tags.some(t => note.tags.includes(t))
-        )
+    const hasExcludeTags = excludeTags && excludeTags.length > 0
+    const hasTags = tags && tags.length > 0
+
+    const filteredNotes = notes.filter(note => {
+      if (hasExcludeTags && excludeTags.some(t => note.tags.includes(t))) {
+        return false
       }
-    } else if (selectedTags.length > 0) {
-      filteredNotes = filteredNotes.filter(note =>
-        selectedTags.some(t => note.tags.includes(t))
-      )
-    }
+      if (hasTags && !tags.some(t => note.tags.includes(t))) {
+        return false
+      }
+      if (
+        query &&
+        !(
+          note.title.toLowerCase().includes(queryLower) ||
+          note.content.toLowerCase().includes(queryLower) ||
+          note.tags.some(tag => tag.toLowerCase().includes(queryLower))
+        )
+      ) {
+        return false
+      }
+      return true
+    })
+
     setFilteredNotes(filteredNotes)
   }
 
@@ -65,7 +72,13 @@ const useSearchManager = () => {
     const tags = savedTags
     if (tags !== undefined) {
       const updatedTags = tags.map((tag: Tag) =>
-        tag.name === newTag.name ? { ...tag, color: newTag.color } : tag
+        tag.name === newTag.name
+          ? {
+              ...tag,
+              color: newTag.color,
+              hideFromSearch: newTag.hideFromSearch
+            }
+          : tag
       )
       const uniqueTags = Array.from(
         new Map(updatedTags.map(tag => [tag.name, tag])).values()
@@ -81,7 +94,7 @@ const useSearchManager = () => {
 
   const getTag = async (name?: string) => {
     let tags = await loadSavedTags()
-    const tag = tags.find((tag:Tag) => tag.name === name)
+    const tag = tags.find((tag: Tag) => tag.name === name)
     return tag
   }
 
@@ -105,25 +118,24 @@ const useSearchManager = () => {
     // Process the names array
     names.forEach(name => {
       if (!tagMap.has(name)) {
-        // If the name does not exist in the map, add it with a default color
-        tagMap.set(name, { name, color: '' }) // You can choose a default color or logic
+        tagMap.set(name, { name, color: '' })
       }
     })
-
-    // Convert the map back to an array
     return Array.from(tagMap.values())
   }
 
   const generateTagStyles = (tag: Tag, isSelected: boolean) => {
     if (!tag.color) tag.color = getTagColor(tag.name)
     if (isSelected) {
-      return `border-2 border-blue-500 ${tag.color?tag.color:'bg-gray-200 text-gray-800'}`
+      return `border-2 border-blue-500 ${
+        tag.color ? tag.color : 'bg-gray-200 text-gray-800'
+      }`
     }
     return tag.color ? tag.color : 'bg-gray-200 text-gray-800'
   }
 
-  const getAllSavedTags = async () =>{
-    return await loadSavedTags()    
+  const getAllSavedTags = async () => {
+    return await loadSavedTags()
   }
 
   return {

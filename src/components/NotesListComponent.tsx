@@ -44,12 +44,13 @@ const NotesListComponent: React.FC<{ filteredNotes: Note[] }> = ({
     })()
   }, [])
 
+  if (loading) {
+    return <LoadingSpinner />
+  }
+
   return (
     <>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <div className='scrollable-content flex-1 overflow-y-auto pb-4'>
+       <div className='scrollable-content flex-1 overflow-y-auto pb-4'>
            <ul className='space-y-2'>
               {currentNotes.map(note => (
                 <li key={note.id} className='note-item bg-white'>
@@ -94,7 +95,6 @@ const NotesListComponent: React.FC<{ filteredNotes: Note[] }> = ({
             )}
           </div>
         </div>
-      )}
     </>
   )
 }

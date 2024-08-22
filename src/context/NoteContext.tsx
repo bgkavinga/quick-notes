@@ -30,6 +30,7 @@ type NoteContextType = {
   notification: string | null
   selectedTags: string[]
   allTags: string[]
+  excludeTags: string[]
   searchQuery: string
   savedTags: Tag[]
   isContextLoading: boolean
@@ -41,6 +42,7 @@ type NoteContextType = {
   setAllTags: (tags: string[]) => void
   setSearchQuery: (query: string) => void
   setSavedTags: (tags: Tag[]) => void
+  setExcludeTags: (tags: string[]) => void
 }
 
 export const NoteContext = createContext<NoteContextType | undefined>(undefined)
@@ -54,6 +56,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
   const [notification, setNotification] = useState<string | null>(null)
   const [selectedTags, setSelectedTagsState] = useState<string[]>([])
   const [allTags, setAllTagsState] = useState<string[]>([])
+  const [excludeTags, setExcludeTags] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [savedTags, setSavedTags] = useState<Tag[]>([])
   const { setItem, getItem } = useStorageManager()
@@ -79,16 +82,11 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         const notes = savedNotes || []
         setNotes(notes)
         setFilteredNotes(notes)
-        console.log('savedTags',savedTags,persistState)
         if (
           savedTags &&
           savedTags.length > 0 &&
           persistState
         ) {
-          const filtered = notes.filter((note: Note) =>
-            savedTags.some((t: string) => note.tags.includes(t))
-          )
-          setFilteredNotes(filtered)
           setSelectedTagsState(savedTags || [])
         }
         setIsContextLoading(false)
@@ -148,6 +146,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         allTags,
         searchQuery,
         savedTags,
+        excludeTags,
         setNotes,
         setFilteredNotes,
         setCurrentNote,
@@ -156,7 +155,8 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({
         setAllTags,
         setSearchQuery,
         setSavedTags,
-        isContextLoading
+        isContextLoading,
+        setExcludeTags
       }}
     >
       {children}

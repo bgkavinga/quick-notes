@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import HomePage from '@/pages/HomePage'
-import NoteEditPage from '@/pages/NoteEditPage'
+import NoteCreatePage from '@/pages/NoteCreatePage'
 import NoteDetailPage from '@/pages/NoteDetailPage'
 import NoteDeletePage from '@/pages/NoteDeletePage'
 import NoRoutePage from '@/pages/NoRoutePage'
@@ -11,6 +11,8 @@ import useConfigManager from './hooks/useConfigManager'
 import useStorageManager from './hooks/useStorageManager'
 import Layout from './pages/Layout'
 import TagEditPage from './pages/TagEditPage'
+import ContextMenuItems from './pages/ContextMenuItems'
+import ContextMenuItemCreate from './pages/ContextMenuItemCreate'
 
 const App: React.FC = () => {
   const location = useLocation()
@@ -48,12 +50,15 @@ const App: React.FC = () => {
     <Routes>
       <Route path='/' element={<Layout />} >
         <Route index element={<HomePage />} />
-        <Route path='/note-update/:id?' element={<NoteEditPage />} />
+        <Route path='/note-update/:id?' element={<NoteCreatePage />} />
         <Route path='/note-detail/:id?' element={<NoteDetailPage />} />
         <Route path='/note-delete/:id' element={<NoteDeletePage />} />
         <Route path='/settings' element={<SettingsPage />} />
         <Route path='/tag-list' element={<TagListPage />} />
         <Route path='/tag-edit/:tagName' element={<TagEditPage />} />
+        <Route path='/tag-edit/:tagName' element={<TagEditPage />} />
+        <Route path='/context-menu' element={<ContextMenuItems />} />
+        <Route path='/context-menu-create' element={<ContextMenuItemCreate />} />
         <Route path='*' element={<NoRoutePage />} />
       </Route>
     </Routes>

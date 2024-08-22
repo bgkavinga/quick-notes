@@ -23,7 +23,7 @@ const tagColors = [
 const TagEditPage = () => {
   const { tagName } = useParams()
   const navigate = useNavigate()
-  const [tag, setTag] = useState({ name: '', color: tagColors[0] })
+  const [tag, setTag] = useState({ name: '', color: tagColors[0],hideFromSearch:false })
   const [isLoading, setIsLoading] = useState(true)
   const { saveTag, getTag } = useSearchManager()
   const { setNotification } = useNotificationManager()
@@ -59,7 +59,7 @@ const TagEditPage = () => {
         </div>
       </header>
       <div className='flex-1 overflow-y-auto p-4'>
-        <div className='max-w-lg mx-auto'>
+        <div className='max-w-lg mx-auto space-y-8'>
           <div className='mb-4'>
             <label className='block text-sm font-medium text-gray-700'>
               Tag Name
@@ -85,6 +85,17 @@ const TagEditPage = () => {
                 />
               ))}
             </div>
+          </div>
+          <div className='mb-4 space-x-4 flex'>
+              <label className='block text-sm font-medium text-gray-700'>
+                Exclude from search
+              </label>
+              <input
+                type='checkbox'
+                checked={tag.hideFromSearch}
+                onChange={e => setTag({ ...tag, hideFromSearch: e.target.checked })}
+                className='mt-1 block h-5 w-5'
+              />
           </div>
           <div className='flex justify-end'>
             <button
