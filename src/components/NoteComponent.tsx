@@ -71,7 +71,7 @@ const NoteComponent: React.FC<Note> = note => {
                 >
                 <a onClick={() => handleTagClick(tag)}>  {tag} </a> 
                 <FaTimes
-                    className='ml-2 cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300'
+                    className='ml-2 cursor-pointer text-red-500 bg-gray-200 hover:text-red-700 transition-colors duration-300'
                     onClick={() => handleRemoveTag(tag)}
                   />
                 </span>
