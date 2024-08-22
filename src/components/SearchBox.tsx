@@ -16,7 +16,10 @@ const SearchBox: React.FC<SearchBoxProps> = ({ query, tags,excludeTags }) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
-    search(e.target.value + query, tags, excludeTags)
+    if (query){
+      return search(e.target.value + query, tags, excludeTags)
+    }
+    search(e.target.value, tags, excludeTags)
   };
 
   useEffect(() => {
