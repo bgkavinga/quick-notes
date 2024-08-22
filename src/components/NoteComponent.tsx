@@ -58,7 +58,7 @@ const NoteComponent: React.FC<Note> = note => {
         <ul className='flex flex-wrap p-2 space-x-2'>
           {note.tags &&
             note.tags.map(tag => (
-              <li
+              tag!='context' && <li
                 key={tag}
                 className={`text-sm tag-item px-3 py-1 mt-1 cursor-pointer transition-colors duration-300 ${
                   selectedTags.includes(tag)

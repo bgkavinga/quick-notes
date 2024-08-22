@@ -82,10 +82,9 @@ const NoteCreatePage: React.FC = () => {
     <>
       <header className='top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
         <div className='flex items-center'>
-          <FaArrowLeft
-            className='mr-2 cursor-pointer text-xl'
-            onClick={() => navigate(-1)}
-          />
+        <div className="p-4 cursor-pointer" onClick={() => navigate(-1)}>
+          <FaArrowLeft className='mr-2 cursor-pointer text-xl'/>
+          </div>
           <h1 className='text-xl'>{note ? 'Edit Note' : 'New Note'}</h1>
         </div>
         <div className='flex space-x-4 p-2 ml-2'>

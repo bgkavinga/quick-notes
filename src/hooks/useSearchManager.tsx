@@ -37,7 +37,7 @@ const useSearchManager = () => {
       updatedSelectedTags = [...selectedTags, tag]
     }
     setSelectedTags(updatedSelectedTags)
-    search(searchQuery, updatedSelectedTags)
+    search(searchQuery, updatedSelectedTags, ['context'])
   }
 
   const search = (query: string, tags?: string[], excludeTags?: string[]) => {

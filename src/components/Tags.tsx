@@ -24,7 +24,7 @@ const Tags: React.FC = () => {
         <div className='tags-list p-2'>
           <ul className='flex flex-wrap space-x-2'>
             {localTags?.map(tag => (
-              !tag.hideFromSearch &&
+              tag.name!='context' && !tag.hideFromSearch &&
               <li
                 key={tag.name}
                 className={`tag-item text-sm px-3 py-1 mt-1 cursor-pointer transition-colors text-gray-800 duration-300 ${
