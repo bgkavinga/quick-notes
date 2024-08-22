@@ -29,8 +29,8 @@ const NoteComponent: React.FC<Note> = note => {
     <>
       <div className='relative group'>
         <div className='flex items-center bg-slate-200 text-gray-800 justify-between'>
-          <h1 className='text-lg font-bold p-2 cursor-pointer flex-grow'>
-            {note.title ? truncate(note.title || '', 40) : 'Untitled'}
+          <h1 className='text-sm font-bold p-2 cursor-pointer flex-grow' onClick={() => navigate(`/note-detail/${note.id}`)}>
+            {note.title ? truncate(note.title || '', 55) : 'Untitled'}
           </h1>
           <div className='flex space-x-4 p-2 ml-2'>
             <FaEdit

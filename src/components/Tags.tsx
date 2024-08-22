@@ -34,7 +34,7 @@ const Tags: React.FC = () => {
                 } `}
                 onClick={() => handleTagClick(tag.name)}
               >
-                #{tag.name}
+                {tag.name}
               </li>
             ))}
           </ul>
