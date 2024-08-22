@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { FaHome, FaTags, FaCog,FaBuffer } from 'react-icons/fa'
+import { FaHome, FaTags, FaCog,FaBuffer,FaQuestion } from 'react-icons/fa'
 import Notification from '@/components/Notification'
 
 
@@ -63,6 +63,17 @@ const Layout: React.FC<LayoutProps> = () => {
               >
                 <FaCog className='mr-2' />
                 Settings
+              </Link>
+            </li>
+            <li>
+              <Link
+                to='/help'
+                className={`flex items-center py-2 px-3 rounded-md transition-colors duration-200 ${
+                  isActive('/help') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                }`}
+              >
+                <FaQuestion className='mr-2' />
+                Help
               </Link>
             </li>
           </ul>

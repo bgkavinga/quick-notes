@@ -12,7 +12,7 @@ import useStorageManager from './hooks/useStorageManager'
 import Layout from './pages/Layout'
 import TagEditPage from './pages/TagEditPage'
 import ContextMenuItems from './pages/ContextMenuItems'
-import ContextMenuItemCreate from './pages/ContextMenuItemCreate'
+import HelpPage from './pages/HelpPage'
 
 const App: React.FC = () => {
   const location = useLocation()
@@ -58,7 +58,7 @@ const App: React.FC = () => {
         <Route path='/tag-edit/:tagName' element={<TagEditPage />} />
         <Route path='/tag-edit/:tagName' element={<TagEditPage />} />
         <Route path='/context-menu' element={<ContextMenuItems />} />
-        <Route path='/context-menu-create' element={<ContextMenuItemCreate />} />
+        <Route path='/help' element={<HelpPage />} />
         <Route path='*' element={<NoRoutePage />} />
       </Route>
     </Routes>

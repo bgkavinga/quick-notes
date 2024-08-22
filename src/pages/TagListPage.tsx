@@ -1,5 +1,3 @@
-// TagListPage.tsx
-import React,{useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaArrowLeft, FaEdit } from 'react-icons/fa'
 import { useNoteContext } from '@/context/NoteContext'
@@ -8,10 +6,6 @@ import { Tag } from '@/hooks/useSearchManager'
 const TagListPage: React.FC = () => {
   const navigate = useNavigate()
   const { savedTags } = useNoteContext()
-
-  useEffect(() => {
-
-  }, [])
 
   return (
     <>
