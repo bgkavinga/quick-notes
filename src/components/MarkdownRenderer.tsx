@@ -40,12 +40,15 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
       return hasLineBreak ? (
         <div className='relative'>
           <code>{code}</code>
-          <button
-            onClick={() => handleCopy(code)}
-            className='copy-button absolute right-2 top-2 bottom-2 px-2 text-white rounded cursor-pointer transition-colors duration-300 hover:bg-gray-700 flex items-center justify-center'
-          >
-            <FaCopy className='inline-block' />
-          </button>
+          <div className='absolute right-2 top-2 bottom-2 px-2 text-white flex items-center justify-center'>
+            <button
+              onClick={() => handleCopy(code)}
+              className='copy-button rounded cursor-pointer duration-300 hover:bg-gray-700 transition-colors '
+            >
+              <FaCopy className='inline-block' />
+            </button>
+          </div>
+          
         </div>
       ) : (
         <code className={`${className} p-4 rounded`} {...props}>
