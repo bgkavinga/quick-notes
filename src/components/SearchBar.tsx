@@ -45,12 +45,14 @@ const SearchBar: React.FC = () => {
       <button
         onClick={onAddClick}
         className='flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded'
+        title="Click to add a new note"
       >
         <FaPlus />
       </button>
       <button
         onClick={onAddLinkClick}
         className='flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded'
+        title="Click to create note with current tab link"
       >
         <FaLink  />
       </button>

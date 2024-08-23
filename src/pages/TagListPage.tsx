@@ -22,7 +22,10 @@ const TagListPage: React.FC = () => {
 
         <div className='scrollable-content flex-1 overflow-y-auto pb-4'>
           <ul className='space-y-2'>
-            {savedTags?.map((tag: Tag) => (
+            {savedTags.length === 0 ?
+            (
+              <p className='text-gray-600 text-lg'>No tags available</p>
+            )  : savedTags.map((tag: Tag) => (
               <li
                 key={tag.name}
                 className={`flex justify-between items-center p-4 text-sm ${tag.color}`}

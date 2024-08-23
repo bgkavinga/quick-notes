@@ -22,7 +22,7 @@ const ContextMenuItems: React.FC = () => {
           </div>
         </header>
         {filteredNotes.length === 0 ? (
-          <p className='text-gray-600 text-lg'>No notes available</p>
+          <p className='text-gray-600 text-lg'>No context menus available</p>
         ) : (
           <NotesListComponent filteredNotes={filteredNotes} />
         )}
