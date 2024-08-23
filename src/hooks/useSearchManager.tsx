@@ -57,8 +57,8 @@ const useSearchManager = () => {
         query &&
         !(
           note.title.toLowerCase().includes(queryLower) ||
-          note.content.toLowerCase().includes(queryLower) ||
-          note.tags.some(tag => tag.toLowerCase().includes(queryLower))
+          note.content.toLowerCase().includes(queryLower)
+          // note.tags.some(tag => tag.toLowerCase().includes(queryLower))
         )
       ) {
         return false
