@@ -64,7 +64,7 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
 
   return (
     <ReactMarkdown
-      className='note-content mt-2 break-words prose p-2 text-sm'
+      className='note-content mt-2 break-words prose p-2 text-base'
       components={renderers}
     >
       {content}

@@ -114,7 +114,7 @@ const NoteCreatePage: React.FC = () => {
               type='text'
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className='w-full p-3 mb-2 border border-gray-300 rounded-lg text-lg font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm'
+              className='w-full p-2 mb-2 border border-gray-300 rounded-lg text-base font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm'
               placeholder='Title'
             />
           </div>
@@ -172,7 +172,7 @@ const NoteCreatePage: React.FC = () => {
               value={newTag}
               onChange={e => setNewTag(e.target.value)}
               onKeyDown={handleAddTag}
-              className='w-full p-3 mb-2 border border-gray-300 rounded-lg text-lg font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm'
+              className='w-full p-2 mb-2 border border-gray-300 rounded-lg text-sm font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-base'
               placeholder='New Tag'
             />
             <small className='text-gray-500'>Press Enter to add a tag</small>

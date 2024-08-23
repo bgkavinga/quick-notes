@@ -15,7 +15,7 @@ const Layout: React.FC<LayoutProps> = () => {
 
   return (
     <div className='flex flex-grow layout'>
-     <aside className='w-1/4 bg-gray-800 text-white p-4'>
+     <aside className='w-1/5 bg-gray-800 text-white p-4'>
         <div className='mb-4'>
           <h2 className='text-2xl font-bold'>Quick Note</h2>
         </div>
@@ -51,7 +51,7 @@ const Layout: React.FC<LayoutProps> = () => {
                 }`}
               >
                 <FaBuffer className='mr-2' />
-                Context Menus
+                Context
               </Link>
             </li>
             <li>
@@ -79,7 +79,7 @@ const Layout: React.FC<LayoutProps> = () => {
           </ul>
         </nav>
       </aside>
-      <main className='w-3/4'>
+      <main className='w-4/5'>
         <Outlet />
       </main>
       <Notification />
