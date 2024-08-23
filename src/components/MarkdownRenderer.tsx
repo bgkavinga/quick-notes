@@ -43,7 +43,7 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
           <div className='absolute right-2 top-2 bottom-2 px-2 text-white flex items-center justify-center'>
             <button
               onClick={() => handleCopy(code)}
-              className='copy-button rounded cursor-pointer duration-300 hover:bg-gray-700 transition-colors '
+              className='copy-button rounded cursor-pointer duration-300 hover:bg-gray-700 transition-colors opacity-80 hover:opacity-100'
             >
               <FaCopy className='inline-block' />
             </button>
@@ -67,7 +67,7 @@ const MarkdownRenderer: React.FC<Props> = ({ content }) => {
 
   return (
     <ReactMarkdown
-      className='note-content mt-2 break-words prose p-2 text-base'
+      className='note-content mt-2 break-words prose prose-sm prose-neutral p-2 text-base prose-a:text-blue-600 hover:prose-a:text-blue-500'
       components={renderers}
     >
       {content}

@@ -10,16 +10,17 @@ interface SearchBoxProps {
 
 
 const SearchBox: React.FC<SearchBoxProps> = ({ query, tags,excludeTags }) => {
-  const { searchQuery,setSearchQuery } = useNoteContext();
+  const { searchQuery,setSearchQuery,selectedTags } = useNoteContext();
   const {search} = useSearchManager()
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
+    const mergedTags = tags ? [...tags, ...selectedTags] : selectedTags
     if (query){
-      return search(e.target.value + query, tags, excludeTags)
+      return search(e.target.value + query, mergedTags, excludeTags)
     }
-    search(e.target.value, tags, excludeTags)
+    search(e.target.value, mergedTags, excludeTags)
   };
 
   useEffect(() => {
