@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { FaArrowLeft } from 'react-icons/fa'
+import { FaArrowLeft, FaTrash } from 'react-icons/fa'
 import LoadingSpinner from '../components/LoadingSpinner'
 import useSearchManager from '@/hooks/useSearchManager'
 import useNotificationManager from '@/hooks/useNotificationManager'
@@ -23,7 +23,7 @@ const tagColors = [
 const TagEditPage = () => {
   const { tagName } = useParams()
   const navigate = useNavigate()
-  const [tag, setTag] = useState({ name: '', color: tagColors[0],hideFromSearch:false })
+  const [tag, setTag] = useState({ name: '', color: tagColors[0],hideFromSearch:false,deletable:false })
   const [isLoading, setIsLoading] = useState(true)
   const { saveTag, getTag } = useSearchManager()
   const { setNotification } = useNotificationManager()
@@ -50,14 +50,19 @@ const TagEditPage = () => {
   return (
     <div className='flex flex-col h-full'>
       <header className='top-0 left-0 w-full bg-gray-800 text-white py-2 px-4 shadow-md flex items-center justify-between z-50'>
-        <div className='flex items-center'>
-          <FaArrowLeft
-            className='mr-2 text-xl cursor-pointer'
-            onClick={() => navigate('/tag-list')}
-          />
-          <h1 className='text-xl'>Edit Tag</h1>
-        </div>
-      </header>
+          <div className='flex items-center'>
+            <div className='p-4 cursor-pointer' onClick={() => navigate(-1)}>
+              <FaArrowLeft className='mr-2 cursor-pointer text-xl' />
+            </div>
+            <h1 className='text-xl'>Edit Tag</h1>
+          </div>
+          <div className='flex space-x-4 p-2 ml-2'>
+            { tag.deletable && <FaTrash
+              className='cursor-pointer text-red-500 hover:text-red-700 transition-colors duration-300 text-lg'
+              onClick={() => navigate(`/tag-delete/${tag.name}`)}
+            /> }
+          </div>
+        </header>
       <div className='flex-1 overflow-y-auto p-4'>
         <div className='max-w-lg mx-auto space-y-8'>
           <div className='mb-4'>

@@ -6,6 +6,7 @@ export type Tag = {
   name: string
   color?: string
   hideFromSearch?: boolean
+  deletable?: boolean
 }
 
 const useSearchManager = () => {
@@ -113,12 +114,19 @@ const useSearchManager = () => {
 
   const mergeTags = (tags: Tag[], names: string[]): Tag[] => {
     // Convert the array of tags to a Map for efficient lookup
-    const tagMap = new Map(tags.map(tag => [tag.name, tag]))
+    const tagMap = new Map(tags.map(tag => [tag.name, {...tag, deletable: true}]))
 
     // Process the names array
     names.forEach(name => {
-      if (!tagMap.has(name)) {
-        tagMap.set(name, { name, color: '' })
+      if (tagMap.has(name)) {
+        // Update existing entry
+        const existingEntry = tagMap.get(name);
+        if (existingEntry){
+          tagMap.set(name, { ...existingEntry, deletable: false });
+        }
+      } else {
+        // Add new entry
+        tagMap.set(name, { name, color: '', deletable: false });
       }
     })
     return Array.from(tagMap.values())
@@ -138,6 +146,18 @@ const useSearchManager = () => {
     return await loadSavedTags()
   }
 
+  const deleteTag = async (name?: string) => {
+    let tags = await getItem(TAGS_KEY)
+    if (tags) {
+      // Find the tag to delete
+      const updatedTags = tags.filter((tag:Tag) => tag.name !== name);
+      
+      // Update the storage with the modified list of tags
+      await setItem(TAGS_KEY, updatedTags);
+      await loadSavedTags();
+    }
+  }
+
   return {
     handleTagClick,
     search,
@@ -146,6 +166,7 @@ const useSearchManager = () => {
     generateTagStyles,
     getTag,
     getAllSavedTags,
+    deleteTag,
     isSearchManagerLoading
   }
 }

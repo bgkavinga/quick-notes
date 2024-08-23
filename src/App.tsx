@@ -13,6 +13,7 @@ import Layout from './pages/Layout'
 import TagEditPage from './pages/TagEditPage'
 import ContextMenuItems from './pages/ContextMenuItems'
 import HelpPage from './pages/HelpPage'
+import TagDeletePage from './pages/TagDeletePage'
 
 const App: React.FC = () => {
   const location = useLocation()
@@ -59,6 +60,7 @@ const App: React.FC = () => {
         <Route path='/tag-edit/:tagName' element={<TagEditPage />} />
         <Route path='/context-menu' element={<ContextMenuItems />} />
         <Route path='/help' element={<HelpPage />} />
+        <Route path='/tag-delete/:tagName' element={<TagDeletePage />} />
         <Route path='*' element={<NoRoutePage />} />
       </Route>
     </Routes>
